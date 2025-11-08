@@ -1,0 +1,5 @@
+# size sun
+size * 0.00025%
+
+# size planet
+size * 0.025% < sun_size = ?

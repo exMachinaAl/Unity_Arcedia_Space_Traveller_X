@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7dc06f6e4c8c244d9a77616f5152fc1, type: 3}
+  m_Name: step 1_find wood
+  m_EditorClassIdentifier: 
+  speakerName: 
+  subtitleText: 
+  voice: {fileID: 0}
+  quest: {fileID: 11400000, guid: cfa1a7a3ad78c9e449f3e9bb3c316b6c, type: 2}
