@@ -22,16 +22,16 @@ Queue<Chunk> treeSpawnQueue = new Queue<Chunk>();
 
         List<Vector2Int> toLoad = new List<Vector2Int>();
 
-for (int y = -settings.viewDistance; y <= settings.viewDistance; y++)
-{
-    for (int x = -settings.viewDistance; x <= settings.viewDistance; x++)
-    {
-        Vector2Int chunkCoord = new Vector2Int(playerChunk.x + x, playerChunk.y + y);
+        for (int y = -settings.viewDistance; y <= settings.viewDistance; y++)
+        {
+            for (int x = -settings.viewDistance; x <= settings.viewDistance; x++)
+            {
+                Vector2Int chunkCoord = new Vector2Int(playerChunk.x + x, playerChunk.y + y);
 
-        if (!loadedChunks.ContainsKey(chunkCoord))
-            toLoad.Add(chunkCoord);
-    }
-}
+                if (!loadedChunks.ContainsKey(chunkCoord))
+                    toLoad.Add(chunkCoord);
+            }
+        }
 
 // Sort by distance to player so nearest chunks load first
 toLoad.Sort((a, b) =>
@@ -61,43 +61,28 @@ if (treeSpawnQueue.Count > 0)
 }
 
 
-
-
-
-
-        // for (int y = -settings.viewDistance; y <= settings.viewDistance; y++)
-        // {
-        //     for (int x = -settings.viewDistance; x <= settings.viewDistance; x++)
-        //     {
-        //         Vector2Int chunkCoord = new Vector2Int(playerChunk.x + x, playerChunk.y + y);
-
-        //         if (!loadedChunks.ContainsKey(chunkCoord))
-        //             LoadChunk(chunkCoord);
-        //     }
-        // }
-
         // unload chunks too far
-        List<Vector2Int> toRemove = new List<Vector2Int>();
-        foreach (var chunk in loadedChunks)
+    List<Vector2Int> toRemove = new List<Vector2Int>();
+    foreach (var chunk in loadedChunks)
+    {
+        if (Mathf.Abs(chunk.Key.x - playerChunk.x) > settings.viewDistance ||
+            Mathf.Abs(chunk.Key.y - playerChunk.y) > settings.viewDistance)
         {
-            if (Mathf.Abs(chunk.Key.x - playerChunk.x) > settings.viewDistance ||
-                Mathf.Abs(chunk.Key.y - playerChunk.y) > settings.viewDistance)
+            foreach (var obj in chunk.Value.spawnedObjects)
             {
-                foreach (var obj in chunk.Value.spawnedObjects)
-                {
-                    if (obj != null)
-                        obj.SetActive(false);
-                }
-
-                GameObject.Destroy(chunk.Value.chunkObject);
-                toRemove.Add(chunk.Key);
-
-
+                if (obj != null)
+                    obj.SetActive(false);
             }
-        }
 
-        foreach (var c in toRemove)
-            loadedChunks.Remove(c);
+            GameObject.Destroy(chunk.Value.chunkObject);
+            toRemove.Add(chunk.Key);
+
+
+        }
+    }
+
+    foreach (var c in toRemove)
+        loadedChunks.Remove(c);
 
 
 
@@ -132,7 +117,7 @@ void SpawnTrees(Chunk chunk, Vector2Int coord)
     Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
 
 
-    // int galaxySeed = SeedUtil.SubSeed(Game_UniverseManager.Instance.universeSeed, 0);
+    // int galaxySeed = SeedUtil.SubSeed(Game_SeedManager.Instance.universeSeed, 0);
         // int seedWorld = SeedUtil.SubSeed(galaxySeed, 0);
 
         int size = settings.chunkSize;

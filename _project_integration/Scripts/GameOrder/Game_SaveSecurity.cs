@@ -70,7 +70,17 @@ public static class SaveSecurity
 
         StringBuilder sb = new StringBuilder();
 
+        sb.Append(data.playerId ?? "");
+        sb.Append("|");
         sb.Append(data.playerName ?? "");
+        sb.Append("|");
+        sb.Append(data.universeSeed);
+        sb.Append("|");
+        sb.Append(data.galaxySeed);
+        sb.Append("|");
+        sb.Append(data.playerMode);
+        sb.Append("|");
+        sb.Append(data.playerInThe);
         sb.Append("|");
         sb.Append(data.scienceCredit);
         sb.Append("|");

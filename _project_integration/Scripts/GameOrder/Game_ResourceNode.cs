@@ -7,7 +7,7 @@ public class Game_ResourceNode : MonoBehaviour
 {
     [Header("Identification")]
     public long resourceId; // set via inspector or auto-generate in editor
-    public string itemDropId = "orion_tree"; // id item yang masuk inventory
+    public string itemDropId = "Orion_tree"; // id item yang masuk inventory
     public int dropAmount = 100; // banyaknya yang didapat sekali ekstrak
 
     [Header("Mining")]

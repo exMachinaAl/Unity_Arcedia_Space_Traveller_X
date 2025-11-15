@@ -20674,15 +20674,14 @@ MonoBehaviour:
   timeline: {fileID: 1079679515}
   spaceWarpMat: {fileID: 0}
   subFadeColor: {r: 1, g: 1, b: 1, a: 1}
-  AdditiveScene:
-  - Test_WorldGeneration
+  AdditiveScene: []
   introTextList:
   - .
   textSpeed: 2
   textStay: 2
   warpMax: 0.9
   fadeDuration: 2
-  nextScene: Test_worldChunk
+  nextScene: EX_bootsraps
 --- !u!1 &2011196423
 GameObject:
   m_ObjectHideFlags: 0

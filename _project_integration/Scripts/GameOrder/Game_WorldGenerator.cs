@@ -31,7 +31,7 @@ public class Game_WorldGenerator : MonoBehaviour
 
     void Start()
     {
-        int galaxySeed = SeedUtil.SubSeed(Game_UniverseManager.Instance.universeSeed, 0);
+        int galaxySeed = SeedUtil.SubSeed(Game_SeedManager.Instance.universeSeed, 0);
         seedWorld = SeedUtil.SubSeed(galaxySeed, 0);
         GenerateWorld(seedWorld);
     }

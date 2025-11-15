@@ -1,0 +1,8 @@
+{
+    "files.autoSave": "off",
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {},
+    "C_Cpp.updateChannel": "Insiders",
+    "workbench.editor.enablePreview": false
+    
+}

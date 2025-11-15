@@ -38,7 +38,7 @@ public class Game_UniverseGenerator : MonoBehaviour
 
     void Start()
     {
-        GenerateUniverse(Game_UniverseManager.Instance.universeSeed);
+        GenerateUniverse(Game_SeedManager.Instance.universeSeed);
     }
 
     public void GenerateUniverse(int seed)

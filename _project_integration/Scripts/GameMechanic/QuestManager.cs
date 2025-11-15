@@ -4,7 +4,12 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance;
 
-    void Awake() => Instance = this;
+    // void Awake() => Instance = this;
+    void Awake()
+    {
+        if (Instance == null && QuestManager.Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); Load(); }
+        else Destroy(gameObject);
+    }
 
     Quest activeQuest;
     int count;

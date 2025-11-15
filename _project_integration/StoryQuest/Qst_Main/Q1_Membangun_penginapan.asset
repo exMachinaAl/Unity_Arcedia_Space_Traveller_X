@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questTitle: Membuat tempat tinggal seentara
   questDescription: carilah kayu disekitar sini
-  targetItemName: Orion_tree
-  targetItemCount: 200
+  targetItemName: orion_tree
+  targetItemCount: 999
   completionMode: 1
   returnToNPC: DeltaBe

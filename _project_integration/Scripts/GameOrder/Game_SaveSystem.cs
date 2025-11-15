@@ -15,7 +15,12 @@ public class PlanetInvatedData
 [System.Serializable]
 public class PlayerSave
 {
+    public string playerId;
     public string playerName;
+    public int universeSeed;
+    public long galaxySeed;
+    public PlayerMode playerMode;
+    public PlayerInThe playerInThe;
     public int scienceCredit;
     public List<PlanetInvatedData> planetsInterrupted = new List<PlanetInvatedData>();
     public long lastWorld;
@@ -65,6 +70,42 @@ public class Game_SaveSystem : MonoBehaviour
     {
         return save.lastWorld; 
     }
+
+    public bool setNameByCutscene(string name)
+    { 
+        save.playerName = name;
+        Save();
+        return true;
+    }
+    public bool setNewGame()
+    {
+        uint seed = (uint)System.DateTime.Now.Ticks;
+        Unity.Mathematics.Random rng = new Unity.Mathematics.Random(seed);
+
+        save.playerId = Guid.NewGuid().ToString();
+        save.playerName = "none";
+        save.universeSeed = rng.NextInt(1, int.MaxValue);
+        save.galaxySeed = SeedUtil.SubSeed((long)save.universeSeed, 0);
+        save.playerMode = PlayerMode.Flight;
+        save.playerInThe = PlayerInThe.Space;
+        // save.playerMode = PlayerMode.Human;
+        // save.playerInThe = PlayerInThe.Ground;
+        save.scienceCredit = 0;
+        save.lastWorld = SeedUtil.SubSeed(save.galaxySeed, 0);
+
+        if (Root_GameStartManager.isDebugMode)
+        {
+            save.scienceCredit = 1000;
+            save.playerName = "Mod";
+        }
+
+        Save();
+        return true;
+    }
+    public PlayerSave getFullSaveData()
+    {
+        return save;
+    } 
 
 
     public void Save()

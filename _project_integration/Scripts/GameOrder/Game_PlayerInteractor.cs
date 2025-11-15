@@ -12,12 +12,21 @@ public class Game_PlayerInteractor : MonoBehaviour
     Game_ResourceNode currentNode;
     bool isHoldingInteract = false;
 
+    void Start()
+    {
+        if (playerCamera == null)
+        {
+            playerCamera = Manager_Player.Instance.playerCam;
+        }
+    }
+
     void Update()
     {
         if (playerCamera == null) return;
 
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, interactRange, interactLayerMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, interactRange, interactLayerMask)) // coba tambahin interak ke intreak abel objek
+        // nih disini untuk pesawat deh nanti
         {
             Debug.Log($"Hit somewting: {hit.collider.name}");
             Game_ResourceNode node = hit.collider.GetComponentInParent<Game_ResourceNode>();

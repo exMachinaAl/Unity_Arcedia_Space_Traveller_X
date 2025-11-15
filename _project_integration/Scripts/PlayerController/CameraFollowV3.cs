@@ -4,6 +4,7 @@ public class CameraFollowV3 : MonoBehaviour
 {
     [Header("Target Settings")]
     public Transform target;
+    public Transform cam;
     public Vector3 offset = new Vector3(0, 2, -8);
 
     [Header("Camera Movement")]
