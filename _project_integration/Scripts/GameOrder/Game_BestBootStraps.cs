@@ -8,7 +8,7 @@ public static class Game_BestBootStraps
         CreateIfNotExists<Game_SaveSystem>("----Game_SaveSystem----");
         CreateIfNotExists<Root_GameStartManager>("_StarterManager_");
         CreateIfNotExists<QuestManager>("----QuestManager----");
-        CreateIfNotExists<UIManager>("----UIManager----");
+        CreateIfNotExists<UIQuest>("----UIManager----"); // ini hanya sementara, karena harus ui manager global
         CreateIfNotExists<Game_SeedManager>("---SeedManager---");
         CreateIfNotExists<Manager_Player>("---PlayerManager---");
         CreateIfNotExists<Manager_Landing>("---LandingManager---");

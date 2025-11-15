@@ -196,6 +196,7 @@ public class FlightControllerV1 : MonoBehaviour
             shipCam.gameObject.SetActive(true);
 
         gameObject.tag = "Player";
+        gameObject.transform.Find("ShipModel").gameObject.tag = "Player";
     }
 
     // Dipanggil dari PlayerManager saat player keluar
@@ -209,6 +210,7 @@ public class FlightControllerV1 : MonoBehaviour
             shipCam.gameObject.SetActive(false);
 
         gameObject.tag = "Untagged";
+        gameObject.transform.Find("ShipModel").gameObject.tag = "Untagged";
     }
 
     // Export data jika kamu perlu simpan pesawat

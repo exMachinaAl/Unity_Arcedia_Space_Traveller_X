@@ -14,6 +14,7 @@ public class Game_PlanetLandingZone : MonoBehaviour
     // public InitLDZ(float planetRadius, float atmosphereThickness)
     public void InitLDZ(Game_PlanetFullInformation planetInfoComponent)
     {
+        this.planetInfoComponent = planetInfoComponent;
         atmosphereCollider = GetComponent<SphereCollider>();
         atmosphereCollider.isTrigger = true;
 

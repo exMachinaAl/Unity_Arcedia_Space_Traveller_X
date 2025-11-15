@@ -7,7 +7,7 @@ public class Manager_Landing : MonoBehaviour
     public static Manager_Landing Instance;
     // public Transform player;
     public string planetSceneName = "Template_UnderWorld";
-    public string atmosferPlanetSceneName = "Template";
+    public string atmosferPlanetSceneName = "Template_Atmosphere";
     public string spaceSceneName = "Template_SpaceWorld";
     private bool isLanding = false;
 

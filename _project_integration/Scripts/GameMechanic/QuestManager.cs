@@ -7,7 +7,7 @@ public class QuestManager : MonoBehaviour
     // void Awake() => Instance = this;
     void Awake()
     {
-        if (Instance == null && QuestManager.Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); Load(); }
+        if (Instance == null && QuestManager.Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
         else Destroy(gameObject);
     }
 
