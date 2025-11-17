@@ -7,17 +7,24 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
     public ChunkSettings settings;
     public GameObject chunkPrefab;
 
-Queue<Chunk> treeSpawnQueue = new Queue<Chunk>();
+    Queue<Chunk> treeSpawnQueue = new Queue<Chunk>();
 
     Dictionary<Vector2Int, Chunk> loadedChunks = new Dictionary<Vector2Int, Chunk>();
     //public List<GameObject> spawnedObjects = new List<GameObject>();
 
     void Start()
     {
-        if (player == null && Manager_Player.Instance != null)
+        if (player == null && Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Human)
         {
             player = Manager_Player.Instance.player.transform;
         }
+        else if (player == null && Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Flight)
+        {
+            player = Manager_Player.Instance.flightCtrl.shipTransform;
+        }
+
+        // if (Manager)
+        Manager_Landing.Instance.surfaceRootPosition = transform;
     }
     void Update()
     {
@@ -28,59 +35,43 @@ Queue<Chunk> treeSpawnQueue = new Queue<Chunk>();
 
         List<Vector2Int> toLoad = new List<Vector2Int>();
 
-for (int y = -settings.viewDistance; y <= settings.viewDistance; y++)
-{
-    for (int x = -settings.viewDistance; x <= settings.viewDistance; x++)
-    {
-        Vector2Int chunkCoord = new Vector2Int(playerChunk.x + x, playerChunk.y + y);
+        for (int y = -settings.viewDistance; y <= settings.viewDistance; y++)
+        {
+            for (int x = -settings.viewDistance; x <= settings.viewDistance; x++)
+            {
+                Vector2Int chunkCoord = new Vector2Int(playerChunk.x + x, playerChunk.y + y);
 
-        if (!loadedChunks.ContainsKey(chunkCoord))
-            toLoad.Add(chunkCoord);
-    }
-}
+                if (!loadedChunks.ContainsKey(chunkCoord))
+                    toLoad.Add(chunkCoord);
+            }
+        }
 
-// Sort by distance to player so nearest chunks load first
-toLoad.Sort((a, b) =>
-{
-    float da = Vector2Int.Distance(a, playerChunk);
-    float db = Vector2Int.Distance(b, playerChunk);
-    return da.CompareTo(db);
-});
+        // Sort by distance to player so nearest chunks load first
+        toLoad.Sort((a, b) =>
+        {
+            float da = Vector2Int.Distance(a, playerChunk);
+            float db = Vector2Int.Distance(b, playerChunk);
+            return da.CompareTo(db);
+        });
 
-// Load in sorted priority
-foreach (var c in toLoad)
-    LoadChunk(c);
+        // Load in sorted priority
+        foreach (var c in toLoad)
+            LoadChunk(c);
 
-if (treeSpawnQueue.Count > 0)
-{
-    Chunk c = treeSpawnQueue.Peek();
+        if (treeSpawnQueue.Count > 0)
+        {
+            Chunk c = treeSpawnQueue.Peek();
 
-    // kalau chunk sudah hilang dari loadedChunks, skip
-    if (!loadedChunks.ContainsKey(c.coord) || c.chunkObject == null)
-    {
-        treeSpawnQueue.Dequeue();
-        return;
-    }
+            // kalau chunk sudah hilang dari loadedChunks, skip
+            if (!loadedChunks.ContainsKey(c.coord) || c.chunkObject == null)
+            {
+                treeSpawnQueue.Dequeue();
+                return;
+            }
 
-    treeSpawnQueue.Dequeue();
-    SpawnTrees(c, c.coord);
-}
-
-
-
-
-
-
-        // for (int y = -settings.viewDistance; y <= settings.viewDistance; y++)
-        // {
-        //     for (int x = -settings.viewDistance; x <= settings.viewDistance; x++)
-        //     {
-        //         Vector2Int chunkCoord = new Vector2Int(playerChunk.x + x, playerChunk.y + y);
-
-        //         if (!loadedChunks.ContainsKey(chunkCoord))
-        //             LoadChunk(chunkCoord);
-        //     }
-        // }
+            treeSpawnQueue.Dequeue();
+            SpawnTrees(c, c.coord);
+        }
 
         // unload chunks too far
         List<Vector2Int> toRemove = new List<Vector2Int>();
@@ -127,18 +118,18 @@ if (treeSpawnQueue.Count > 0)
         loadedChunks.Add(coord, chunk);
     }
 
-void SpawnTrees(Chunk chunk, Vector2Int coord)
-{
+    void SpawnTrees(Chunk chunk, Vector2Int coord)
+    {
         // PRNG berdasarkan chunk + seed → konsisten
         // int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ settings.seed;
         // Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
 
         long planetId = Game_SaveSystem.Instance.getCurrentPlanetId();
         int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ (int)planetId;
-    Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
+        Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
 
 
-    // int galaxySeed = SeedUtil.SubSeed(Game_SeedManager.Instance.universeSeed, 0);
+        // int galaxySeed = SeedUtil.SubSeed(Game_SeedManager.Instance.universeSeed, 0);
         // int seedWorld = SeedUtil.SubSeed(galaxySeed, 0);
 
         int size = settings.chunkSize;
@@ -168,7 +159,7 @@ void SpawnTrees(Chunk chunk, Vector2Int coord)
             double nz = (worldZ / (double)settings.noiseScale) + planetId * 0.0000000000001;
 
             float hght = Mathf.PerlinNoise((float)nx, (float)nz) * settings.heightMultiplier;
-            
+
             float height = Mathf.Round(hght * 1000f) / 1000f;
 
             // baru spawn pohon
@@ -182,9 +173,20 @@ void SpawnTrees(Chunk chunk, Vector2Int coord)
 
             GameObject tree = Instantiate(settings.treePrefab, pos, Quaternion.identity, chunk.chunkObject.transform);
             chunk.spawnedObjects.Add(tree);
-        tree.GetComponent<Game_ResourceNode>().Init(resourceId);
+            tree.GetComponent<Game_ResourceNode>().Init(resourceId);
+        }
     }
-}
 
+    public void OnChangePlayerTransform()
+    {
+        if (Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Human)
+        {
+            player = Manager_Player.Instance.player.transform;
+        }
+        else if (Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Flight)
+        {
+            player = Manager_Player.Instance.flightCtrl.shipTransform;
+        }
+    }
 
 }

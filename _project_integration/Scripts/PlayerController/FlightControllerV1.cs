@@ -39,6 +39,8 @@ public class FlightControllerV1 : MonoBehaviour
 
     private bool isControlled = false;
     // private Rigidbody rb;
+    public GameObject shipGameObject;
+    public Transform shipTransform;
 
     public Transform exitPoint;          // tempat player keluar dari pesawat
 
@@ -47,6 +49,12 @@ public class FlightControllerV1 : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         // rb.isKinematic = true; // kapal tidak bergerak sebelum dinaiki
         rb.useGravity = true; // kapal tidak bergerak sebelum dinaiki
+    }
+
+    void Start()
+    {
+        shipGameObject = gameObject;
+        shipTransform = transform;    
     }
 
     void Update()

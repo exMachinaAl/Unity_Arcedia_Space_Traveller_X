@@ -4,16 +4,16 @@ using System.Collections.Generic;
 
 
 [System.Serializable]
-public class PlanetInformation
-{
-    public string planetName;
-    public long planetSeed;
-    public Vector3 position;
-    public float size;
-    public float atmosphereThickness;
-    public float mineralDensity;
-    public float mineralMaxRichness;
-}
+// public class PlanetInformation
+// {
+//     public string planetName;
+//     public long planetSeed;
+//     public Vector3 position;
+//     public float size;
+//     public float atmosphereThickness;
+//     public float mineralDensity;
+//     public float mineralMaxRichness;
+// }
 
 public class Game_PlanetGenerationData : MonoBehaviour
 {

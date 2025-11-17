@@ -6,7 +6,15 @@
     "playerMode": 1,
     "playerInThe": 1,
     "scienceCredit": 1000,
-    "planetsInterrupted": [],
-    "lastWorld": -540863582517842336,
-    "checksum": "DCC93CCC455CAE10689DBD4CD4196451D4CCFD55165AA25CB4DBE25083CBF57B"
+    "planetsInterrupted": [
+        {
+            "planetId": -540863582384330233,
+            "depletedNodes": [
+                -1980860102564,
+                -1980860099433
+            ]
+        }
+    ],
+    "lastWorld": -540863582384330233,
+    "checksum": "67018F05C243DD98D519088322D8676044097F244DFDF90A8231A1765B009950"
 }

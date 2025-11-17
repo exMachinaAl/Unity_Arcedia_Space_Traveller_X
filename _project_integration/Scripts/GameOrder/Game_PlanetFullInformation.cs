@@ -11,26 +11,55 @@ public class Game_PlanetFullInformation : MonoBehaviour
         public float amount;
     }
 
+    public Transform planetTransform;
+    private Transform PlanetVisual;
+    // public float planetRadius = 200f;
+    public float atmosphereExtra = 90f;
+    public float enterAdderSurface = 45f;
     public PlanetInformation planetInfo;
     // public List<RNG_PlanetData.MineralExData> mineralResources = new List<RNG_PlanetData.MineralExData>();
     public List<MineralResult> mineralResources = new List<MineralResult>();
     private List<MineralExData> planetDataConfig;
+    public Transform AtmosphereTrigger;
+    public Transform SurfaceTrigger;
 
-    public 
+    public
     void Start()
     {
         // planetDataConfig = Root_GameStartManager.Instance.planetDataConfigGen.mineralResources;
         // InitRandomResourceData();
+        planetTransform = transform;
     }
 
     public void Init(PlanetInformation oltah)
     {
+        // PlanetVisual = transform.Find("MeshPlanet");
+        // // transform.find("MeshPlanet").localScale = Vector3.one * (oltah.radius * 2);
+
+        // PlanetVisual.localScale = Vector3.one * (oltah.radius);
+        // float planetScale = PlanetVisual.localScale.x; // diasumsikan uniform
+        // float realPlanetSize = oltah.radius * planetScale;
+        // // float realPlanetSize = planetRadius * planetScale;
+
+        // AtmosphereTrigger.GetComponent<SphereCollider>().radius = realPlanetSize + atmosphereExtra;
+        // SurfaceTrigger.GetComponent<SphereCollider>().radius = realPlanetSize;
+
+        PlanetVisual = transform.Find("MeshPlanet");
+
+        // Planet visual scale = diameter
+        PlanetVisual.localScale = Vector3.one * (oltah.radius * 2f);
+
+        // Karena scale sudah benar, collider radius = radius
+        AtmosphereTrigger.GetComponent<SphereCollider>().radius = oltah.radius + atmosphereExtra + enterAdderSurface;
+        SurfaceTrigger.GetComponent<SphereCollider>().radius = oltah.radius + enterAdderSurface;
+
+
         planetInfo = oltah;
         planetDataConfig = Root_GameStartManager.Instance.planetDataConfigGen.mineralResources;
-        Debug.Log(planetDataConfig[0].ToString());
+        // Debug.Log(planetDataConfig[0].ToString());
         InitRandomResourceData();
 
-        gameObject.GetComponentInChildren<Game_PlanetLandingZone>().InitLDZ(this);
+        gameObject.GetComponentInChildren<Game_PlanetEnteringAtmosphere>().InitLDZ(this);
     }
 
     void InitRandomResourceData()

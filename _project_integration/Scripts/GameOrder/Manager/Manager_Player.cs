@@ -83,6 +83,14 @@ public class Manager_Player : MonoBehaviour
         shipCam = ship.shipCam;
         shipCam.gameObject.SetActive(true);
 
+        //change player chunkWSGen
+        var surface = FindObjectOfType<Game_SurfaceWorldGeneration>(true); 
+        // (true) = cari juga di inactive objects (Unity 2020+)
+        if (surface != null)
+            surface.OnChangePlayerTransform();
+        else
+            Debug.LogWarning("SurfaceWorldGeneration belum tersedia / scene belum load");
+
         // Make ship DDOL
         DontDestroyOnLoad(ship.gameObject);
     }
@@ -96,6 +104,15 @@ public class Manager_Player : MonoBehaviour
 
         // Move ship back to planet scene
         SceneManager.MoveGameObjectToScene(ship.gameObject, planetScene);
+
+        //change player chunkWSGen
+        //change player chunkWSGen
+        var surface = FindObjectOfType<Game_SurfaceWorldGeneration>(true); 
+        // (true) = cari juga di inactive objects (Unity 2020+)
+        if (surface != null)
+            surface.OnChangePlayerTransform();
+        else
+            Debug.LogWarning("SurfaceWorldGeneration belum tersedia / scene belum load");
 
         // Show player
         player.transform.position = exitPoint.position;
