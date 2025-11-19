@@ -31,6 +31,7 @@ public class Game_NpcInteractor : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.F))
         {
+            Manager_Quest.Instance.StartStoryQuest();
             Debug.Log("Player interacted with: " + name);
         }
     }

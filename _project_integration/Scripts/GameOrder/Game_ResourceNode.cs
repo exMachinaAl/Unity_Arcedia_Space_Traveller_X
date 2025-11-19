@@ -12,7 +12,7 @@ public class Game_ResourceNode : MonoBehaviour
 
     [Header("Mining")]
     public ToolType requiredTool = ToolType.Axe;
-    public float miningDuration = 3f; // detik harus hold
+    public float miningDuration = 50f; // detik harus hold
 	
 	public static MiningUI MiningUIInstance;
 
@@ -88,6 +88,7 @@ public class Game_ResourceNode : MonoBehaviour
 				yield break;
 			}
 
+			// elapsed += 0.7f * Time.deltaTime;
 			elapsed += Time.deltaTime;
 
 			// Update UI
@@ -117,7 +118,8 @@ public class Game_ResourceNode : MonoBehaviour
         playerInventory.AddItem(itemDropId, dropAmount);
 		
 		// ada quest
-		QuestManager.Instance.CollectItem(itemDropId, dropAmount);
+		// QuestManager.Instance.CollectItem(itemDropId, dropAmount);
+		Manager_Quest.Instance.CollectItem(itemDropId, dropAmount);
 
         // mark in save
         if (Game_SaveSystem.Instance != null)

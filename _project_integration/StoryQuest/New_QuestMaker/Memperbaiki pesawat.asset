@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cde6743de4530984a93bba50e72b39a5, type: 3}
+  m_Name: Memperbaiki pesawat
+  m_EditorClassIdentifier: 
+  questTitle: mbenakno kapal molok
+  questDescription: "IDK \u03BE\u03B8\u03C3\u03C4 \u03C8\u03B7\u03BF\u03C0 \u03C4\u03B7\u03B5
+    \u03C4\u03C1\u03B5\u03B5"
+  questStep:
+  - subTitleQuest: cari 250 kayu
+    objective:
+      idItem: orion_tree
+      valueItem: 250
+    npcTalkBefore:
+    - npcName: DeltaBe
+      npcT: "\u03C2\u03BF\u03B9 \u03C8\u03B1\u03C1\u03B9\u03B9\u03BD \u03BA\u03B1\u03C5\u03B8
+        \u03BD\u03BE\u03B9\u03C1, \u03BA\u03B1\u03C0\u03B1\u03BB \u03BA\u03B9\u03C4\u03B1
+        \u03BB\u03B1\u03B3\u03B9 \u03B2\u03B5\u03BE\u03B1\u03C4 \u03BD\u03B9\u03B7,
+        \u03C0\u03BF\u03BA\u03BF\u03BA\u03BD\u03C5\u03B1 \u03C8\u03B1\u03C1\u03B9\u03B9\u03BD,
+        \u03BF\u03BA\u03B5\u03B7"
+      npcV: {fileID: 0}
+    - npcName: DeltaBe
+      npcT: "\u03C3\u03BF\u03BC\u03B5 \u03C4\u03B9\u03BC\u03B5 \u03C5\u03BF\u03B8
+        \u03BD\u03B5\u03B5\u03B4 a rest okay"
+      npcV: {fileID: 0}
+    npcTalkAfter:
+    - npcName: DeltaBe
+      npcT: "\u03C2\u03B1\u03B7 \u03C4\u03B5\u03C1\u03B9\u03BC\u03B1\u03BA\u03B1\u03C3\u03B9\u03B7
+        \u03BB\u03BF\u03B7 \u03C5\u03B1, \u03C8\u03B1\u03C5\u03B1\u03BD\u03B3 \u03B2\u03B1\u03BD\u03B3\u03B5\u03C4
+        \u03BE\u03B1\u03B4\u03B9\u03BD\u03C5\u03B1 nice, but need more"
+      npcV: {fileID: 0}
+    rewardPerStep:
+      scienceCredit: 50
+    completionMode: 1
+    isDone: 0
+  - subTitleQuest: cari 500 kayu
+    objective:
+      idItem: orion_tree
+      valueItem: 500
+    npcTalkBefore:
+    - npcName: DeltaBe
+      npcT: "\u03C2\u03BF\u03B9 \u03C8\u03B1\u03C1\u03B9\u03B9\u03BD \u03BA\u03B1\u03C5\u03B8
+        \u03BD\u03BE\u03B9\u03C1, \u03BA\u03B1\u03C0\u03B1\u03BB \u03BA\u03B9\u03C4\u03B1
+        \u03BB\u03B1\u03B3\u03B9 \u03B2\u03B5\u03BE\u03B1\u03C4 \u03BD\u03B9\u03B7,
+        \u03C0\u03BF\u03BA\u03BF\u03BA\u03BD\u03C5\u03B1 \u03C8\u03B1\u03C1\u03B9\u03B9\u03BD,
+        \u03BF\u03BA\u03B5\u03B7, komceV2"
+      npcV: {fileID: 0}
+    npcTalkAfter:
+    - npcName: DeltaBe
+      npcT: "\u03C2\u03B1\u03B7 \u03C4\u03B5\u03C1\u03B9\u03BC\u03B1\u03BA\u03B1\u03C3\u03B9\u03B7
+        \u03BB\u03BF\u03B7 \u03C5\u03B1, \u03C8\u03B1\u03C5\u03B1\u03BD\u03B3 \u03B2\u03B1\u03BD\u03B3\u03B5\u03C4
+        let go, we can fly now, but wiat a sec"
+      npcV: {fileID: 0}
+    rewardPerStep:
+      scienceCredit: 50
+    completionMode: 1
+    isDone: 0

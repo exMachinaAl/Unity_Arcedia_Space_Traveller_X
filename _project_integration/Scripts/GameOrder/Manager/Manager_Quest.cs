@@ -1,0 +1,179 @@
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class OCQuestCategory {
+    public List<SO_StoryQuest> storyQuest = new List<SO_StoryQuest>();
+    public List<SO_QuestCreator> mainQuest = new List<SO_QuestCreator>();
+    public List<SO_QuestCreator> sideQuest = new List<SO_QuestCreator>();
+}
+
+
+public class Manager_Quest : MonoBehaviour
+{
+    public static Manager_Quest Instance;
+
+    public OCQuestCategory quests = new OCQuestCategory();
+
+    void Awake()
+    {
+        if (Instance == null && Manager_Quest.Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); }
+        else Destroy(gameObject);
+    }
+
+    Quest activeQuest;
+    int count;
+    int mainStepQst;
+    int numStepQst;
+    bool objectiveDone = false;
+    SO_QuestCreator currentQst;
+    SO_QuestCreator.OCStepQuest currentStepQst;
+
+    //sysytem testing
+    public GameObject planePrefab;
+
+    void Start()
+    {
+        mainStepQst = 0;
+        numStepQst = 0;
+    }
+
+    public void StartStoryQuest()
+    {
+        // currentQst = quests.mainQuest[mainStepQst];
+        // currentStepQst = currentQst.questStep[numStepQst];
+        // activeQuest = q;
+        // count = 0;
+        objectiveDone = false;
+
+        try
+        {
+            currentQst = quests.mainQuest[mainStepQst];
+        }
+        catch (System.ArgumentOutOfRangeException aex)
+        {
+            // if (currentQst == null)
+            {
+                // crtitical test mode for fast track
+                GameObject plane = Instantiate(planePrefab, new Vector3(0, 10, 0), Quaternion.identity);
+                var rootsObj = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                foreach (var obj in rootsObj)
+                {
+                    if (obj.name == "Broken_Ship")
+                    {
+                        Destroy(obj);
+                    }
+                }
+                // GameObject brknShip = plane.transform.parent.Find("Broken_Ship").gameObject;
+                // Destroy(brknShip);
+
+                Debug.Log($"Quest completeted");
+                return;
+            }
+        }
+
+
+        try
+        {
+            currentStepQst = currentQst.questStep[numStepQst];
+        }
+        catch (System.ArgumentOutOfRangeException aex)
+        {
+            // if (currentStepQst == null)
+            {
+                mainStepQst++;
+                numStepQst = 0;
+                StartStoryQuest();
+                return;
+            }
+        }
+
+        Manager_UI.Instance.SetCurrentQuest(currentQst.questTitle, currentStepQst.subTitleQuest);
+        // Manager_UI.Instance.SetCurrentQuest(currentQst.questTitle, currentQst.questDescription);
+        StartCoroutine(YappingPerSec(5f));
+        
+        // mainStepQst++;
+    }
+
+    private IEnumerator YappingPerSec(float yap)
+    {
+        // foreach (var questStep in currentQst.questStep)
+        {
+            // foreach (var befYap in questStep.npcTalkBefore)
+            foreach (var befYap in currentStepQst.npcTalkBefore)
+            {
+                Manager_UI.Instance.ShowYapping(befYap.npcT);
+                yield return new WaitForSeconds(yap);
+            }
+            Manager_UI.Instance.HideYapping();
+        }
+    }
+    private IEnumerator AfYappingPerSec(float yap)
+    {
+        // foreach (var questStep in currentQst.questStep)
+        {
+            // foreach (var befYap in questStep.npcTalkBefore)
+            foreach (var afYap in currentStepQst.npcTalkAfter)
+            {
+                Manager_UI.Instance.ShowYapping(afYap.npcT);
+                yield return new WaitForSeconds(yap);
+            }
+            Manager_UI.Instance.HideYapping();
+        }
+    }
+
+    public void CollectItem(string itemName, int collected)
+    {
+        if (currentQst == null) return;
+        if (itemName != currentStepQst.objective.idItem) return;
+
+        count += collected;
+        //count++;
+        Manager_UI.Instance.UpdateProgress(count, currentStepQst.objective.valueItem);
+
+        if (count >= currentStepQst.objective.valueItem)
+            OnObjectiveComplete();
+    }
+
+    void OnObjectiveComplete()
+    {
+        objectiveDone = true;
+        Manager_UI.Instance.MarkObjectiveDone();
+
+        if (currentStepQst.completionMode == QuestCompletionMode.AutoComplete)
+        {
+            CompleteQuest();
+        }
+        else
+        {
+            Manager_UI.Instance.ShowReturnHint(currentStepQst.npcTalkBefore[0].npcName);
+        }
+    }
+
+    public void InteractWithNPC(string npcName)
+    {
+        if (currentQst == null) return;
+        if (!objectiveDone) return;
+
+        if (currentStepQst.completionMode == QuestCompletionMode.ReturnToNPC &&
+            npcName == currentStepQst.npcTalkBefore[0].npcName)
+        {
+            StartCoroutine(AfYappingPerSec(5f));
+            CompleteQuest();
+        }
+    }
+
+    void CompleteQuest()
+    {
+        count = 0;
+        numStepQst++;
+        StartStoryQuest();
+        // Manager_UI.Instance.Hide();
+        // currentQst = null;
+
+        // Continue story
+        // FindObjectOfType<StoryManager>().NextStep();
+    }
+}

@@ -86,10 +86,10 @@ public class Game_SaveSystem : MonoBehaviour
         save.playerName = "none";
         save.universeSeed = rng.NextInt(1, int.MaxValue);
         save.galaxySeed = SeedUtil.SubSeed((long)save.universeSeed, 0);
-        save.playerMode = PlayerMode.Flight;
-        save.playerInThe = PlayerInThe.Space;
-        // save.playerMode = PlayerMode.Human;
-        // save.playerInThe = PlayerInThe.Ground;
+        // save.playerMode = PlayerMode.Flight;
+        // save.playerInThe = PlayerInThe.Space;
+        save.playerMode = PlayerMode.Human;
+        save.playerInThe = PlayerInThe.Ground;
         save.scienceCredit = 0;
         save.lastWorld = SeedUtil.SubSeed(save.galaxySeed, 0);
 

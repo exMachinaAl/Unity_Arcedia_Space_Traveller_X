@@ -8,7 +8,9 @@ public class NPCQuestGiver : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
-            QuestManager.Instance.InteractWithNPC(npcName);
+            Manager_Quest.Instance.InteractWithNPC(npcName);
+            // QuestManager.Instance.InteractWithNPC(npcName);
         }
+
     }
 }

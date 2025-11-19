@@ -7,8 +7,8 @@ public static class Game_BestBootStraps
         Debug.Log("Game_BestBootStraps Init testing for every run");
         CreateIfNotExists<Game_SaveSystem>("----Game_SaveSystem----");
         CreateIfNotExists<Root_GameStartManager>("_StarterManager_");
-        CreateIfNotExists<QuestManager>("----QuestManager----");
-        CreateIfNotExists<UIQuest>("----UIManager----"); // ini hanya sementara, karena harus ui manager global
+        // CreateIfNotExists<Manager_Quest>("----QuestManager----");
+        // CreateIfNotExists<Manager_UI>("----UIManager----"); // ini hanya sementara, karena harus ui manager global
         CreateIfNotExists<Game_SeedManager>("---SeedManager---");
         CreateIfNotExists<Manager_Player>("---PlayerManager---");
         CreateIfNotExists<Manager_Landing>("---LandingManager---");
