@@ -87,8 +87,26 @@ public static class SaveSecurity
         sb.Append(data.lastWorld);
         sb.Append("|");
 
-        // Sort planets for deterministic order
-        data.planetsInterrupted.Sort((a, b) => a.planetId.CompareTo(b.planetId));
+        if (data.worldSession != null)
+        {
+            var ds = data.worldSession;
+            ds.ToChecksumString();
+        //     sb.Append(ds.planetId ?? "");
+            //     sb.Append("|");
+            //     sb.Append(ds.planetSeed ?? "");
+            //     sb.Append("|");
+            //     sb.Append(ds.planetRadius ?? "");
+            //     sb.Append("|");
+            //     sb.Append(ds.PlCenterToString());
+            //     sb.Append("|");
+            //     sb.Append(ds.PlEntryNormalToString());
+            //     sb.Append("|");
+            //     sb.Append(ds.PlEntryPositionToString());
+            //     sb.Append("|");
+        }
+
+            // Sort planets for deterministic order
+            data.planetsInterrupted.Sort((a, b) => a.planetId.CompareTo(b.planetId));
 
         foreach (var p in data.planetsInterrupted)
         {
@@ -99,6 +117,8 @@ public static class SaveSecurity
             sb.Append(string.Join(",", p.depletedNodes));
             sb.Append("|");
         }
+
+        // Debug.LogWarning($"[SaveSecurity] save sb == {sb.ToString()}");
 
         // HMAC style final string
         using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey)))

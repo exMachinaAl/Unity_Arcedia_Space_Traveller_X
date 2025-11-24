@@ -27,6 +27,10 @@ public class Root_GameInitManager : MonoBehaviour
     {
         Root_GameStartManager.Instance.InitGameManager();
         PlayerSpawn();
+
+        // start gameplay mode, if not err
+        Manager_Controller.Instance.SetGameplayMode();
+        // Manager_Controller.Instance.SetInputPlayer();
     }
 
     void PlayerSpawn()

@@ -64,6 +64,7 @@ public class Manager_UI : MonoBehaviour
 
     public void OnShowQuestMenu()
     {
+        Manager_Controller.Instance.SetUIMode();
         // Debug.LogWarning("woi error nih logikanya");
         if (Manager_Quest.Instance == null)
             return;
@@ -72,12 +73,11 @@ public class Manager_UI : MonoBehaviour
 
         fullQuestMenu.SetActive(true);
         SetFullListQuest();
-
-
     }
     // public void OnCloseQuestMenu() => fullQuestMenuPanel.
     public void OnCloseQuestMenu()
     {
+        Manager_Controller.Instance.SetGameplayMode();
         fullQuestMenu.SetActive(false);
         miniPanelQuest.SetActive(true);
         btn_questMenu.gameObject.SetActive(true);

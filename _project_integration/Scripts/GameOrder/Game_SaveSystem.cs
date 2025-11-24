@@ -11,6 +11,42 @@ public class PlanetInvatedData
     public long planetId;
     public List<long> depletedNodes = new List<long>();
 }
+[System.Serializable]
+public class WorldSession
+{
+    public long planetId;
+    public long planetSeed;
+    public float surfaceAtmosRadius;
+    public float planetVisualRadius;
+    public float atmosphereHeight;
+    public Vector3 planetCenter;
+    public Vector3 entryNormal;
+    public Vector3 entryPosition;
+
+    // ---- Helper stable formatting ----
+    private string VecToString(Vector3 v)
+    {
+        return $"{v.x:F6}|{v.y:F6}|{v.z:F6}";
+    }
+
+    // ---- Public helpers if needed individually ----
+    public string PlCenterToString()       => VecToString(planetCenter);
+    public string PlEntryNormalToString()  => VecToString(entryNormal);
+    public string PlEntryPositionToString() => VecToString(entryPosition);
+
+    // ---- Full checksum builder for this class ----
+    public string ToChecksumString()
+    {
+        return $"{planetId}|" +
+               $"{planetSeed}|" +
+               $"{surfaceAtmosRadius:F6}|" +
+               $"{planetVisualRadius:F6}|" +
+               $"{atmosphereHeight:F6}|" +
+               $"{VecToString(planetCenter)}|" +
+               $"{VecToString(entryNormal)}|" +
+               $"{VecToString(entryPosition)}";
+    }
+}
 
 [System.Serializable]
 public class PlayerSave
@@ -24,6 +60,7 @@ public class PlayerSave
     public int scienceCredit;
     public List<PlanetInvatedData> planetsInterrupted = new List<PlanetInvatedData>();
     public long lastWorld;
+    public WorldSession worldSession;
     public string checksum;
 }
 
@@ -61,6 +98,29 @@ public class Game_SaveSystem : MonoBehaviour
         if (planetData == null) return false;
         return planetData.depletedNodes.Contains(nodeId);
     }
+    public void SetWorldSession(long planetId, long planetSeed, float surfaceRds, float planetVisRds, float atmosphereHeight, Vector3 planetCenter, Vector3 entryNrl, Vector3 entryPos)
+    {
+        save.worldSession.planetId = planetId;
+        save.worldSession.planetSeed = planetSeed;
+        save.worldSession.surfaceAtmosRadius = surfaceRds;
+        save.worldSession.planetVisualRadius = planetVisRds;
+        save.worldSession.atmosphereHeight = atmosphereHeight;
+        save.worldSession.planetCenter = planetCenter;
+        save.worldSession.entryNormal = entryNrl;
+        save.worldSession.entryPosition = entryPos;
+        Save();
+        
+    }
+    public void SetPlayerInWorld()
+    {
+        save.playerInThe = PlayerInThe.Ground;
+        Save();
+    }
+    public void SetPlayerInSpace()
+    {
+        save.playerInThe = PlayerInThe.Space;
+        Save();
+    }
     public void setCurrentPlanetId(long planetId)
     {
         save.lastWorld = planetId;
@@ -86,12 +146,13 @@ public class Game_SaveSystem : MonoBehaviour
         save.playerName = "none";
         save.universeSeed = rng.NextInt(1, int.MaxValue);
         save.galaxySeed = SeedUtil.SubSeed((long)save.universeSeed, 0);
-        // save.playerMode = PlayerMode.Flight;
-        // save.playerInThe = PlayerInThe.Space;
-        save.playerMode = PlayerMode.Human;
-        save.playerInThe = PlayerInThe.Ground;
+        save.playerMode = PlayerMode.Flight; // ini debug fast space loh ya, kalo new game
+        save.playerInThe = PlayerInThe.Space;
+        // save.playerMode = PlayerMode.Human;
+        // save.playerInThe = PlayerInThe.Ground;
         save.scienceCredit = 0;
         save.lastWorld = SeedUtil.SubSeed(save.galaxySeed, 0);
+        // save.world
 
         if (Root_GameStartManager.isDebugMode)
         {

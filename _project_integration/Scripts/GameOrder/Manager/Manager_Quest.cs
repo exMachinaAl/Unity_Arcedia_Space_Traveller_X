@@ -54,6 +54,7 @@ public class Manager_Quest : MonoBehaviour
         }
         catch (System.ArgumentOutOfRangeException aex)
         {
+            Debug.LogWarning($"error questManager = {aex?.Message}");
             // if (currentQst == null)
             {
                 // crtitical test mode for fast track
@@ -81,6 +82,7 @@ public class Manager_Quest : MonoBehaviour
         }
         catch (System.ArgumentOutOfRangeException aex)
         {
+            Debug.LogWarning($"error questManager = {aex?.Message}");
             // if (currentStepQst == null)
             {
                 mainStepQst++;

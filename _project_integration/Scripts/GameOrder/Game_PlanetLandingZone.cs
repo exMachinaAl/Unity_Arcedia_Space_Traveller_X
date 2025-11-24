@@ -16,6 +16,9 @@ public class Game_PlanetLandingZone : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
+        Vector3 playerPos = other.transform.position;
+
+
         // Debug.Log("Player memasuki planet " + planetInfoComponent.planetInfo.planetName);
         Manager_Landing.Instance.EnteringPlanetSurfaceActiveFlags(transform.parent);
     }

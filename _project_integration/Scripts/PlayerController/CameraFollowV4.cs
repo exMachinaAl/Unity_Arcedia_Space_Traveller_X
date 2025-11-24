@@ -4,6 +4,7 @@ public class CameraFollowV4 : MonoBehaviour
 {
     public Transform player;
     public Transform cam;       // camera transform
+    [SerializeField] bool pCamControl = true;
 
     public float distance = 6f;
     public float minDistance = 3f;
@@ -21,10 +22,10 @@ public class CameraFollowV4 : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked; // 11/23/25
+        // Cursor.visible = false;
 
-        
+
         // registeringPlayer();
     }
     // void Update()
@@ -43,7 +44,47 @@ public class CameraFollowV4 : MonoBehaviour
     {
         if (!player) return;
 
+        switch (Manager_Player.Instance.mode)
+        {
+            case PlayerMode.Human:
+                {
+                    pCamControl = FoundRootPInCamStruct<PlayerControllerV4>(transform).isControlled;
+                    break;
+            }
+            case PlayerMode.Flight:
+                {
+                    pCamControl = FoundRootPInCamStruct<FlightControllerV1>(transform).isControlled;
+                    break;
+            }
+            default: {
+                    Debug.LogWarning($"switch error for Camera follow V4 controller");
+                    break;
+            }
+        }
+        // Debug.LogError($"what if pCamControl = {pCamControl}");
+        if (!pCamControl) return;
+
         // Mouse input
+        CameraFollowingMouse();
+    }
+
+    private T FoundRootPInCamStruct<T>(Transform trn) where T : Component
+    {
+        Transform rpnt = trailParent(trn);
+        return rpnt.GetComponent<T>();
+    }
+    private Transform trailParent(Transform p)
+    {
+        Transform ParentI = p.transform;
+        while (ParentI.parent != null)
+        {
+            ParentI = ParentI.parent;
+        }
+        return ParentI;
+    }
+
+    public void CameraFollowingMouse()
+    {
         yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
         pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);

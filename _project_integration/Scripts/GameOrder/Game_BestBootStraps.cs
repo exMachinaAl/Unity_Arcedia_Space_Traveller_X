@@ -11,6 +11,7 @@ public static class Game_BestBootStraps
         // CreateIfNotExists<Manager_UI>("----UIManager----"); // ini hanya sementara, karena harus ui manager global
         CreateIfNotExists<Game_SeedManager>("---SeedManager---");
         CreateIfNotExists<Manager_Player>("---PlayerManager---");
+        CreateIfNotExists<Manager_Controller>("---ControllerManager---");
         CreateIfNotExists<Manager_Landing>("---LandingManager---");
         // CreateIfNotExists<ChunkManager>("ChunkManager");
 

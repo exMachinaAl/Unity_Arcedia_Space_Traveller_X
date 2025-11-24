@@ -37,7 +37,7 @@ public class FlightControllerV1 : MonoBehaviour
 
     private Vector3 smoothDirection; // smoothing untuk arah
 
-    private bool isControlled = false;
+    public bool isControlled = false;
     // private Rigidbody rb;
     public GameObject shipGameObject;
     public Transform shipTransform;
@@ -194,6 +194,8 @@ public class FlightControllerV1 : MonoBehaviour
     }
 
     // Dipanggil dari PlayerManager saat player masuk pesawat
+    public void EnableGameControl() => isControlled = true;
+    public void DisableGameControl() => isControlled = false;
     public void EnableControl()
     {
         isControlled = true;
