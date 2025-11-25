@@ -14,8 +14,8 @@ public class Game_PlanetFullInformation : MonoBehaviour
     public Transform planetTransform;
     private Transform PlanetVisual;
     // public float planetRadius = 200f;
-    public float atmosphereExtra = 90f;
-    public float enterAdderSurface = 45f;
+    public float atmosphereExtra = 350f;
+    public float enterAdderSurface = 70f;
     public PlanetInformation planetInfo;
     // public List<RNG_PlanetData.MineralExData> mineralResources = new List<RNG_PlanetData.MineralExData>();
     public List<MineralResult> mineralResources = new List<MineralResult>();

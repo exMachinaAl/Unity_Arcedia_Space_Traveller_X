@@ -130,6 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 5841007877418884963}
   cam: {fileID: 7291183032964479639}
+  pCamControl: 1
   distance: 6
   minDistance: 3
   maxDistance: 20
@@ -1121,7 +1122,11 @@ MonoBehaviour:
   shipCam: {fileID: 6475570612519111739}
   crosshairUI: {fileID: 0}
   aimDistance: 200
-  speed: 100
+  speed: 25
+  superHighSpeed: 200
+  isControlled: 0
+  shipGameObject: {fileID: 0}
+  shipTransform: {fileID: 0}
   exitPoint: {fileID: 6978143196783915176}
 --- !u!54 &8138885532413627583
 Rigidbody:

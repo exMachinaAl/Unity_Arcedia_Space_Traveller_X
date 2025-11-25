@@ -30,6 +30,7 @@ public class FlightControllerV1 : MonoBehaviour
     private Vector3 smoothDir;
     private float currentRoll = 0f;        // assign dari inspector
     public float speed = 20f;
+    public float superHighSpeed = 200f;
     // public float rotationSpeed = 50f;
     // [Header("Flight Banking")]
     // public float maxBankAngle = 35f; // derajat miring sayap
@@ -66,6 +67,10 @@ public class FlightControllerV1 : MonoBehaviour
 
         // float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            speed += superHighSpeed;
+        else speed = 25;
 
         // // Gerakkan pesawat
         Vector3 move = transform.forward * v * speed;

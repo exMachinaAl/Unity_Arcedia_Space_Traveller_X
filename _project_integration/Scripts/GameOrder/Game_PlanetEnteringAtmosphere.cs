@@ -40,7 +40,8 @@ public class Game_PlanetEnteringAtmosphere : MonoBehaviour
         Debug.Log("Player memasuki atmosfer planet " + planetInfoComponent.planetInfo.planetName);
 
         // Kirim sinyal ke manager bahwa planet ini siap landing
-        Manager_Landing.Instance.EnterPlanetAtmosphere(planetInfoComponent);
+        // Manager_Landing.Instance.EnterPlanetAtmosphere(planetInfoComponent);
+        Manager_Landing.Instance.OnEnterAtmosphere(planetInfoComponent);
     }
 
     private void OnTriggerExit(Collider other)
@@ -49,6 +50,6 @@ public class Game_PlanetEnteringAtmosphere : MonoBehaviour
 
         Debug.Log("Player meninggalkan atmosfer planet " + planetInfoComponent.planetInfo.planetName);
 
-        Manager_Landing.Instance.ExitPlanetAtmosphere(planetInfoComponent);
+        // Manager_Landing.Instance.ExitPlanetAtmosphere(planetInfoComponent);
     }
 }

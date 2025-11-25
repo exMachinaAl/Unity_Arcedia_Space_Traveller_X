@@ -4,7 +4,7 @@
     "universeSeed": 217542405,
     "galaxySeed": 16066832095123665,
     "playerMode": 1,
-    "playerInThe": 1,
+    "playerInThe": 2,
     "scienceCredit": 1000,
     "planetsInterrupted": [
         {
@@ -17,6 +17,7 @@
                 -36221650397710,
                 -36221650397524,
                 -36221650395757,
+                -36221650395725,
                 -36221650395633
             ]
         }
@@ -25,24 +26,25 @@
     "worldSession": {
         "planetId": 1,
         "planetSeed": -8707340749772458126,
-        "surfaceAtmosRadius": 425.0,
+        "surfaceAtmosRadius": 430.0,
         "planetVisualRadius": 380.0,
-        "atmosphereHeight": 145.0,
+        "AtmosphereRadius": 530.0,
+        "atmosphereHeight": 200.0,
         "planetCenter": {
             "x": 1057.0,
             "y": -167.0,
             "z": -105.0
         },
         "entryNormal": {
-            "x": -0.8998830318450928,
-            "y": 0.4294922351837158,
-            "z": 0.07580892741680145
+            "x": -0.8869933485984802,
+            "y": 0.44459810853004458,
+            "z": -0.12480095773935318
         },
         "entryPosition": {
-            "x": 674.6071166992188,
-            "y": 15.506813049316407,
-            "z": -72.78604125976563
+            "x": 622.4038696289063,
+            "y": 50.83772659301758,
+            "z": -166.14816284179688
         }
     },
-    "checksum": "61DFA10D468661E9ED6924CC354DFD17915465DB153BEBA9F45E8AB8592AD4D2"
+    "checksum": "1C984A498D0968EAA9D251D7FBC30AF93DCE6E9746036CA82C6570C1EF3D9549"
 }

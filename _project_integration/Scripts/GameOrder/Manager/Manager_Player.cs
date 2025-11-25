@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public enum PlayerMode { Human, Flight }
-public enum PlayerInThe { Ground, Space }
+public enum PlayerInThe { Ground, Space, Atmosphere }
 
 public class Manager_Player : MonoBehaviour
 {
@@ -65,11 +65,47 @@ public class Manager_Player : MonoBehaviour
     //     cameraPivot.gameObject.SetActive(false);
     //     shipCam.gameObject.SetActive(true);
     // }
+    public Transform GetCurrentModePlayerTransform()
+    {
+        switch (Game_SaveSystem.Instance.GetPlayerMode())
+        {
+            case PlayerMode.Human:
+                {
+                    return humanCtrl.transform;
+            }
+            case PlayerMode.Flight:
+                {
+                    return flightCtrl.transform;
+            }
+            default: {
+                    Debug.LogWarning($"switch error for Manager Player get transform current player moded");
+                    return null;
+            }
+        }
+    }
+    public Camera GetCurrentCameraPlayer()
+    {
+        switch (Game_SaveSystem.Instance.GetPlayerMode())
+        {
+            case PlayerMode.Human:
+                {
+                    return playerCam;
+            }
+            case PlayerMode.Flight:
+                {
+                    return shipCam;
+            }
+            default: {
+                    Debug.LogWarning($"switch error for Manager Player get transform current player Camera moded");
+                    return null;
+            }
+        }
+    }
 
 
     public void EnterShip(FlightControllerV1 ship)
     {
-        mode = PlayerMode.Flight;
+        Game_SaveSystem.Instance.SetPlayerMode(PlayerMode.Flight);
 
         // Hide player model
         player.SetActive(false);
@@ -84,7 +120,7 @@ public class Manager_Player : MonoBehaviour
         shipCam.gameObject.SetActive(true);
 
         //change player chunkWSGen
-        var surface = FindObjectOfType<Game_SurfaceWorldGeneration>(true); 
+        var surface = FindObjectOfType<Game_SurfaceWorldGeneration>(true);
         // (true) = cari juga di inactive objects (Unity 2020+)
         if (surface != null)
             surface.OnChangePlayerTransform();
@@ -97,7 +133,7 @@ public class Manager_Player : MonoBehaviour
 
     public void ExitShip(FlightControllerV1 ship, Transform exitPoint, Scene planetScene)
     {
-        mode = PlayerMode.Human;
+        Game_SaveSystem.Instance.SetPlayerMode(PlayerMode.Human);
 
         // Disable ship control
         ship.DisableControl();

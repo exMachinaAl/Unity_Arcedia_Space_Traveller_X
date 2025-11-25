@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Game_PlanetLandingZone : MonoBehaviour
 {
-    private Game_PlanetFullInformation planetInfoComponent;
+    [SerializeField]private Game_PlanetFullInformation planetInfoComponent;
     // public float surfaceTriggerRadius = 0.65f;
 
     void Start()
@@ -20,7 +20,8 @@ public class Game_PlanetLandingZone : MonoBehaviour
 
 
         // Debug.Log("Player memasuki planet " + planetInfoComponent.planetInfo.planetName);
-        Manager_Landing.Instance.EnteringPlanetSurfaceActiveFlags(transform.parent);
+        // Manager_Landing.Instance.EnteringPlanetSurfaceActiveFlags(transform.parent);
+        Manager_Landing.Instance.OnEnterSurface(planetInfoComponent);
     }
 
     // private void OnTriggerExit(Collider other)

@@ -14,20 +14,26 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
 
     void Start()
     {
-        if (player == null && Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Human)
-        {
-            player = Manager_Player.Instance.player.transform;
-        }
-        else if (player == null && Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Flight)
-        {
-            player = Manager_Player.Instance.flightCtrl.shipTransform;
-        }
+        // if (player == null && Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Human)
+        // {
+        //     player = Manager_Player.Instance.player.transform;
+        // }
+        // else if (player == null && Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Flight)
+        // {
+        //     player = Manager_Player.Instance.flightCtrl.shipTransform;
+        // }
+
+        player = Manager_Player.Instance.GetCurrentModePlayerTransform();
 
         // if (Manager)
         Manager_Landing.Instance.surfaceRootPosition = transform;
     }
     void Update()
     {
+        var playerCurrentStateWorld = Game_SaveSystem.Instance.GetPlayerInStateWorld();
+        if (playerCurrentStateWorld == PlayerInThe.Atmosphere || playerCurrentStateWorld == PlayerInThe.Space) return;
+        // if (Manager_Landing.Instance.isInAtmosphere || Manager_Landing.Instance.isInSpace) return;
+
         Vector2Int playerChunk = new Vector2Int(
             Mathf.FloorToInt(player.position.x / settings.chunkSize),
             Mathf.FloorToInt(player.position.z / settings.chunkSize)
@@ -179,14 +185,15 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
 
     public void OnChangePlayerTransform()
     {
-        if (Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Human)
-        {
-            player = Manager_Player.Instance.player.transform;
-        }
-        else if (Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Flight)
-        {
-            player = Manager_Player.Instance.flightCtrl.shipTransform;
-        }
+        // if (Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Human)
+        // {
+        //     player = Manager_Player.Instance.player.transform;
+        // }
+        // else if (Manager_Player.Instance != null && Manager_Player.Instance.mode == PlayerMode.Flight)
+        // {
+        //     player = Manager_Player.Instance.flightCtrl.shipTransform;
+        // }
+        player = Manager_Player.Instance.GetCurrentModePlayerTransform();
     }
 
 }

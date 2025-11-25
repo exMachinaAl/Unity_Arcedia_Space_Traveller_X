@@ -18,6 +18,7 @@ public class WorldSession
     public long planetSeed;
     public float surfaceAtmosRadius;
     public float planetVisualRadius;
+    public float AtmosphereRadius;
     public float atmosphereHeight;
     public Vector3 planetCenter;
     public Vector3 entryNormal;
@@ -41,6 +42,7 @@ public class WorldSession
                $"{planetSeed}|" +
                $"{surfaceAtmosRadius:F6}|" +
                $"{planetVisualRadius:F6}|" +
+               $"{AtmosphereRadius:F6}|" +
                $"{atmosphereHeight:F6}|" +
                $"{VecToString(planetCenter)}|" +
                $"{VecToString(entryNormal)}|" +
@@ -74,7 +76,7 @@ public class Game_SaveSystem : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); Load(); }
+        if (Game_SaveSystem.Instance == null && Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); Load(); }
         else Destroy(gameObject);
     }
 
@@ -98,12 +100,13 @@ public class Game_SaveSystem : MonoBehaviour
         if (planetData == null) return false;
         return planetData.depletedNodes.Contains(nodeId);
     }
-    public void SetWorldSession(long planetId, long planetSeed, float surfaceRds, float planetVisRds, float atmosphereHeight, Vector3 planetCenter, Vector3 entryNrl, Vector3 entryPos)
+    public void SetWorldSession(long planetId, long planetSeed, float surfaceRds, float planetVisRds, float AtmosphereRadius, float atmosphereHeight, Vector3 planetCenter, Vector3 entryNrl, Vector3 entryPos)
     {
         save.worldSession.planetId = planetId;
         save.worldSession.planetSeed = planetSeed;
         save.worldSession.surfaceAtmosRadius = surfaceRds;
         save.worldSession.planetVisualRadius = planetVisRds;
+        save.worldSession.AtmosphereRadius = AtmosphereRadius;
         save.worldSession.atmosphereHeight = atmosphereHeight;
         save.worldSession.planetCenter = planetCenter;
         save.worldSession.entryNormal = entryNrl;
@@ -111,15 +114,23 @@ public class Game_SaveSystem : MonoBehaviour
         Save();
         
     }
-    public void SetPlayerInWorld()
+    public void SetPlayerMode(PlayerMode SetMode)
     {
-        save.playerInThe = PlayerInThe.Ground;
+        save.playerMode = SetMode;
         Save();
     }
-    public void SetPlayerInSpace()
+    public PlayerMode GetPlayerMode()
     {
-        save.playerInThe = PlayerInThe.Space;
+        return save.playerMode;
+    }
+    public void SetPlayerInWorld(PlayerInThe currStateW)
+    {
+        save.playerInThe = currStateW;
         Save();
+    }
+    public PlayerInThe GetPlayerInStateWorld()
+    {
+        return save.playerInThe;
     }
     public void setCurrentPlanetId(long planetId)
     {
@@ -146,7 +157,7 @@ public class Game_SaveSystem : MonoBehaviour
         save.playerName = "none";
         save.universeSeed = rng.NextInt(1, int.MaxValue);
         save.galaxySeed = SeedUtil.SubSeed((long)save.universeSeed, 0);
-        save.playerMode = PlayerMode.Flight; // ini debug fast space loh ya, kalo new game
+        save.playerMode = PlayerMode.Human; // ini debug fast space loh ya, kalo new game
         save.playerInThe = PlayerInThe.Space;
         // save.playerMode = PlayerMode.Human;
         // save.playerInThe = PlayerInThe.Ground;

@@ -66,7 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 535a048132c19f940ad7b23410f042fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  surfaceTriggerRadius: 0.65
+  planetInfoComponent: {fileID: 5823151225650507595}
 --- !u!1 &1804330687692021077
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,7 +219,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 962b9b0c338df344490268c1fb6e55c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  atmosphereExtra: 50
+  planetTransform: {fileID: 0}
+  atmosphereExtra: 100
+  enterAdderSurface: 50
   planetInfo:
     planetId: 0
     planetName: 

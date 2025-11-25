@@ -62,7 +62,7 @@ public class Manager_Controller : MonoBehaviour
         Cursor.visible = false;
 
         // aktifkan player controller
-        switch (Manager_Player.Instance.mode)
+        switch (Game_SaveSystem.Instance.GetPlayerMode())
         {
             case PlayerMode.Human:
                 {
@@ -89,7 +89,7 @@ public class Manager_Controller : MonoBehaviour
         Cursor.visible = true;
 
         // matikan player controller
-        switch (Manager_Player.Instance.mode)
+        switch (Game_SaveSystem.Instance.GetPlayerMode())
         {
             case PlayerMode.Human:
                 {

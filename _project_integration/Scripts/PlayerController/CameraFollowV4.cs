@@ -44,7 +44,7 @@ public class CameraFollowV4 : MonoBehaviour
     {
         if (!player) return;
 
-        switch (Manager_Player.Instance.mode)
+        switch (Game_SaveSystem.Instance.GetPlayerMode())
         {
             case PlayerMode.Human:
                 {
