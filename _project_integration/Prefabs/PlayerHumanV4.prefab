@@ -615,6 +615,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5102672038965705575}
+  - component: {fileID: 457933497350435669}
   m_Layer: 0
   m_Name: PlayerModel
   m_TagString: Untagged
@@ -639,6 +640,28 @@ Transform:
   - {fileID: 6774310280154614558}
   m_Father: {fileID: 6673205480430945268}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &457933497350435669
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3660268732596315098}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &3708306445961388167
 GameObject:
   m_ObjectHideFlags: 0

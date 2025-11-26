@@ -13,10 +13,10 @@ public class PlayerControllerV4 : MonoBehaviour
     private Rigidbody rb;
     private Animator animatorCtrl;
     public float gravity = -9.81f;
-    
+
     public float interactRange = 6f;
     public LayerMask interactLayerMask;
-    
+
     // public bool isControlled = true; // debug untuk animasi
     public bool isControlled = false;
 
@@ -26,7 +26,7 @@ public class PlayerControllerV4 : MonoBehaviour
 
     void Start()
     {
-        
+
         animatorCtrl = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         cc = GetComponent<CharacterController>();
@@ -82,7 +82,7 @@ public class PlayerControllerV4 : MonoBehaviour
     {
         isControlled = true;
     }
-    
+
     public void DisableControl()
     {
         isControlled = false;
@@ -153,4 +153,14 @@ public class PlayerControllerV4 : MonoBehaviour
             }
         }
     }
+    public void OnTriggerEnter(Collider other)
+    {
+        Manager_Player.Instance.MOnTriggerEnter(other);
+    }
+
+    public void OnTriggerExit(Collider other)
+    {
+        Manager_Player.Instance.MOnTriggerExit(other);
+    }
+
 }

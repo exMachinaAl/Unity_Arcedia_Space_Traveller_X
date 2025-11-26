@@ -108,7 +108,7 @@ public class Manager_Quest : MonoBehaviour
             foreach (var befYap in currentStepQst.npcTalkBefore)
             {
                 Manager_UI.Instance.ShowYapping(befYap.npcT);
-                Manager_Audio.Instance.PlayAudioClip(audioNpcTalk, befYap.npcV);
+                // Manager_Audio.Instance.PlayAudioClip(audioNpcTalk, befYap.npcV);
                 yield return new WaitForSeconds(yap);
             }
             Manager_UI.Instance.HideYapping();

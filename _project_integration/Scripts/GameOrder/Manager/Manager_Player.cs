@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public enum PlayerMode { Human, Flight }
 public enum PlayerInThe { Ground, Space, Atmosphere }
@@ -17,6 +18,8 @@ public class Manager_Player : MonoBehaviour
     public PlayerMode mode = PlayerMode.Human;
     public PlayerInThe InWorld = PlayerInThe.Ground;
 
+
+    [SerializeField] private List<Mono_NpcInteractor> nearbyNPCs = new List<Mono_NpcInteractor>();
 
     // public float interactRange = 6f;
     // public LayerMask interactLayerMask;
@@ -65,10 +68,10 @@ public class Manager_Player : MonoBehaviour
     //     cameraPivot.gameObject.SetActive(false);
     //     shipCam.gameObject.SetActive(true);
     // }
-    
+
     // public AudioSource GetAudioSourceCurrNpc()
     // {
-        
+
     // }
     public Transform GetCurrentModePlayerTransform()
     {
@@ -96,15 +99,16 @@ public class Manager_Player : MonoBehaviour
             case PlayerMode.Human:
                 {
                     return playerCam;
-            }
+                }
             case PlayerMode.Flight:
                 {
                     return shipCam;
-            }
-            default: {
+                }
+            default:
+                {
                     Debug.LogWarning($"switch error for Manager Player get transform current player Camera moded");
                     return null;
-            }
+                }
         }
     }
 
@@ -149,7 +153,7 @@ public class Manager_Player : MonoBehaviour
 
         //change player chunkWSGen
         //change player chunkWSGen
-        var surface = FindObjectOfType<Game_SurfaceWorldGeneration>(true); 
+        var surface = FindObjectOfType<Game_SurfaceWorldGeneration>(true);
         // (true) = cari juga di inactive objects (Unity 2020+)
         if (surface != null)
             surface.OnChangePlayerTransform();
@@ -163,6 +167,26 @@ public class Manager_Player : MonoBehaviour
         // Switch cameras
         shipCam.gameObject.SetActive(false);
         playerCam.gameObject.SetActive(true);
+    }
+
+    public void MOnTriggerEnter(Collider other)
+    {
+        Mono_NpcInteractor npc = other.GetComponent<Mono_NpcInteractor>();
+        if (npc != null)
+        {
+            nearbyNPCs.Add(npc);
+            Manager_UI.Instance.UIMenuInteract.UpdateInteractableNPCs(nearbyNPCs);
+        }
+    }
+    
+    public void MOnTriggerExit(Collider other)
+    {
+        Mono_NpcInteractor npc = other.GetComponent<Mono_NpcInteractor>();
+        if (npc != null)
+        {
+            nearbyNPCs.Remove(npc);
+            Manager_UI.Instance.UIMenuInteract.UpdateInteractableNPCs(nearbyNPCs);
+        }
     }
 
     // private void OnTriggerStay()

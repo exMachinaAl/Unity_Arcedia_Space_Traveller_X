@@ -8,6 +8,8 @@ using TMPro;
 public class Manager_UI : MonoBehaviour
 {
     public static Manager_UI Instance;
+    public UI_MenuInteractNpc UIMenuInteract;
+
 
     //ini button semua
     public Button btn_questMenu;

@@ -1501,7 +1501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  settings: {fileID: 11400000, guid: f395646ce3d5008408b312ce3b6bc4ef, type: 2}
+  settings: {fileID: 11400000, guid: 56c383e9433734042b09bb43542ef227, type: 2}
   chunkPrefab: {fileID: 5705532208282205690, guid: b4bacc57a7ebfa8479350664b946a5fe,
     type: 3}
 --- !u!1 &819039029
@@ -3901,6 +3901,7 @@ GameObject:
   - component: {fileID: 1785400667}
   - component: {fileID: 1785400666}
   - component: {fileID: 1785400665}
+  - component: {fileID: 1785400674}
   m_Layer: 0
   m_Name: NPC_1
   m_TagString: Untagged
@@ -3921,6 +3922,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   npcName: DeltaBe
+  audioSrc: {fileID: 0}
 --- !u!114 &1785400666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3982,7 +3984,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1.14
+  m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &1785400670
 BoxCollider:
@@ -4087,6 +4089,21 @@ Transform:
   - {fileID: 443363516}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1785400674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785400664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c1471c76e08f05498f15d4162f01573, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcId: DeltaBe
+  npcName: DeltaBe
+  state: 0
 --- !u!1 &1787710539
 GameObject:
   m_ObjectHideFlags: 0

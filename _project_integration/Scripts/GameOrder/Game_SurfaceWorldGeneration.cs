@@ -7,7 +7,13 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
     public ChunkSettings settings;
     public GameObject chunkPrefab;
 
+    float maxSlopeGrass = 0.6f;
+    int grassStep = 3;
+
     Queue<Chunk> treeSpawnQueue = new Queue<Chunk>();
+    // Queue<Chunk> treeSpawnQueue = new Queue<Chunk>();
+
+    [SerializeField]public float[,] heightMap;
 
     Dictionary<Vector2Int, Chunk> loadedChunks = new Dictionary<Vector2Int, Chunk>();
     //public List<GameObject> spawnedObjects = new List<GameObject>();
@@ -22,6 +28,10 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
         // {
         //     player = Manager_Player.Instance.flightCtrl.shipTransform;
         // }
+        heightMap = new float[settings.vertexPerLine, settings.vertexPerLine];
+
+        //settings re Set
+        settings.seed = (int)Game_SaveSystem.Instance.getFullSaveData().lastWorld;
 
         player = Manager_Player.Instance.GetCurrentModePlayerTransform();
 
@@ -64,6 +74,9 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
         foreach (var c in toLoad)
             LoadChunk(c);
 
+        // SpawnGrass();
+
+        // tree spawner
         if (treeSpawnQueue.Count > 0)
         {
             Chunk c = treeSpawnQueue.Peek();
@@ -76,7 +89,8 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
             }
 
             treeSpawnQueue.Dequeue();
-            SpawnTrees(c, c.coord);
+            // SpawnTrees(c, c.coord);
+            SpawnGrass(c, c.coord);
         }
 
         // unload chunks too far
@@ -110,7 +124,8 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
     {
         Chunk chunk = new Chunk(coord, chunkPrefab, transform);
 
-        Mesh mesh = ChunkGenerator.GenerateTerrainMesh(settings, coord);
+        // Mesh mesh = ChunkGenerator.GenerateTerrainMesh(settings, coord);
+        Mesh mesh = ChunkGenerator.GenerateTerrainMeshV2(settings, coord, heightMap);
         chunk.filter.mesh = mesh;
 
         // --- Tambahkan collider ---
@@ -164,7 +179,8 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
             double nx = (worldX / (double)settings.noiseScale) + planetId * 0.0000000000001;
             double nz = (worldZ / (double)settings.noiseScale) + planetId * 0.0000000000001;
 
-            float hght = Mathf.PerlinNoise((float)nx, (float)nz) * settings.heightMultiplier;
+            float hght = Mathf.PerlinNoise((float)nx, (float)nz) * settings.maxHeight;
+            // float hght = Mathf.PerlinNoise((float)nx, (float)nz) * settings.heightMultiplier;
 
             float height = Mathf.Round(hght * 1000f) / 1000f;
 
@@ -182,6 +198,51 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
             tree.GetComponent<Game_ResourceNode>().Init(resourceId);
         }
     }
+
+    public void SpawnGrass(Chunk chunk, Vector2Int coord)
+    {
+        float waterLevel = settings.waterLevel;
+        int vertexPerLine = settings.vertexPerLine;
+        int seed = settings.seed;
+        int size = settings.chunkSize;
+
+        for (int x = 0; x < vertexPerLine - 1; x += grassStep)
+        {
+            for (int z = 0; z < vertexPerLine - 1; z += grassStep)
+            {
+                float h = heightMap[x, z];
+
+                // 1. Jangan di air
+                if (h < waterLevel)
+                    continue;
+
+                // 2. Hitung slope
+                float slope = Mathf.Abs(heightMap[x + 1, z] - h);
+
+                // 3. Jangan di tanah curam
+                if (slope > maxSlopeGrass)
+                    continue;
+
+                // 4. Density (agar tidak semua titik ditanami)
+                float density = Mathf.PerlinNoise(
+                    (coord.x + x) * 0.15f + seed,
+                    (coord.y + z) * 0.15f + seed
+                );
+
+                if (density < 0.5f)
+                    continue;
+
+                // 5. Posisi world
+                float worldX = coord.x * size + x;
+                float worldZ = coord.y * size + z; // jan bingung lah ya, apa kenapa itu Y, itu Vector2
+                Vector3 spawnPos = new Vector3(worldX, h, worldZ);
+
+                GameObject grass = Instantiate(settings.grassPrefab, spawnPos, Quaternion.identity, chunk.chunkObject.transform);
+                chunk.spawnedObjects.Add(grass);
+            }
+        }
+    }
+
 
     public void OnChangePlayerTransform()
     {

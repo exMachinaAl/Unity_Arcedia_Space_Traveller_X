@@ -6,7 +6,14 @@ public static class SeedUtil
     {
         unchecked
         {
-            return parentSeed * 73856093 ^ index * 19349663;
+            long result = parentSeed * 73856093;
+            result ^= index * 19349663;
+
+            if (result < 0) 
+            {
+                Logger.LogWarning("SEED UTIL", "Overflow detected!");
+            }
+            return result;
         }
     }
     public static int SubSeed(int parentSeed, int index)

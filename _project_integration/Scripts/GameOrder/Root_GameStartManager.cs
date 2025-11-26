@@ -12,7 +12,7 @@ public class Root_GameStartManager : MonoBehaviour
     public int maxLoadPlanets = 5;
     void Awake()
     {
-        if (Game_SeedManager.Instance != null && Instance != null)
+        if (Root_GameStartManager.Instance != null && Instance != null)
         {
             Destroy(gameObject);
             return;
