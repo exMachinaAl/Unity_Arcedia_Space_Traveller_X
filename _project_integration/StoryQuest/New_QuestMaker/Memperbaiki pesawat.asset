@@ -27,11 +27,11 @@ MonoBehaviour:
         \u03BB\u03B1\u03B3\u03B9 \u03B2\u03B5\u03BE\u03B1\u03C4 \u03BD\u03B9\u03B7,
         \u03C0\u03BF\u03BA\u03BF\u03BA\u03BD\u03C5\u03B1 \u03C8\u03B1\u03C1\u03B9\u03B9\u03BD,
         \u03BF\u03BA\u03B5\u03B7"
-      npcV: {fileID: 0}
+      npcV: {fileID: 8300000, guid: cfc0502772ac46848b158ceb08f51457, type: 3}
     - npcName: DeltaBe
       npcT: "\u03C3\u03BF\u03BC\u03B5 \u03C4\u03B9\u03BC\u03B5 \u03C5\u03BF\u03B8
         \u03BD\u03B5\u03B5\u03B4 a rest okay"
-      npcV: {fileID: 0}
+      npcV: {fileID: 8300000, guid: ee7b9479df9dc74459daabbfd5b11079, type: 3}
     npcTalkAfter:
     - npcName: DeltaBe
       npcT: "\u03C2\u03B1\u03B7 \u03C4\u03B5\u03C1\u03B9\u03BC\u03B1\u03BA\u03B1\u03C3\u03B9\u03B7

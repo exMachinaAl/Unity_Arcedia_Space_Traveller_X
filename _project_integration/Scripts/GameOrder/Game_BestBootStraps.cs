@@ -13,6 +13,7 @@ public static class Game_BestBootStraps
         CreateIfNotExists<Manager_Player>("---PlayerManager---");
         CreateIfNotExists<Manager_Controller>("---ControllerManager---");
         CreateIfNotExists<Manager_Landing>("---LandingManager---");
+        CreateIfNotExists<Manager_Audio>("---AudioManager---");
         // CreateIfNotExists<ChunkManager>("ChunkManager");
 
         //starting game

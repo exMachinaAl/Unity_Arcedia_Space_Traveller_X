@@ -65,6 +65,11 @@ public class Manager_Player : MonoBehaviour
     //     cameraPivot.gameObject.SetActive(false);
     //     shipCam.gameObject.SetActive(true);
     // }
+    
+    // public AudioSource GetAudioSourceCurrNpc()
+    // {
+        
+    // }
     public Transform GetCurrentModePlayerTransform()
     {
         switch (Game_SaveSystem.Instance.GetPlayerMode())
@@ -72,15 +77,16 @@ public class Manager_Player : MonoBehaviour
             case PlayerMode.Human:
                 {
                     return humanCtrl.transform;
-            }
+                }
             case PlayerMode.Flight:
                 {
                     return flightCtrl.transform;
-            }
-            default: {
+                }
+            default:
+                {
                     Debug.LogWarning($"switch error for Manager Player get transform current player moded");
                     return null;
-            }
+                }
         }
     }
     public Camera GetCurrentCameraPlayer()

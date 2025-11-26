@@ -1758,6 +1758,7 @@ GameObject:
   - component: {fileID: 1846233567438970078}
   - component: {fileID: 5870602556013599811}
   - component: {fileID: 2365038495420504531}
+  - component: {fileID: -1818895255821406212}
   m_Layer: 0
   m_Name: PlayerHumanV4
   m_TagString: Player
@@ -1923,6 +1924,14 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!81 &-1818895255821406212
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8760691195255738519}
+  m_Enabled: 1
 --- !u!1 &8790628910351070968
 GameObject:
   m_ObjectHideFlags: 0

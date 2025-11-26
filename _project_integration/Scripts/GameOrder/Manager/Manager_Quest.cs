@@ -16,6 +16,7 @@ public class Manager_Quest : MonoBehaviour
     public static Manager_Quest Instance;
 
     public OCQuestCategory quests = new OCQuestCategory();
+    [SerializeField] private AudioSource audioNpcTalk;
 
     void Awake()
     {
@@ -107,12 +108,13 @@ public class Manager_Quest : MonoBehaviour
             foreach (var befYap in currentStepQst.npcTalkBefore)
             {
                 Manager_UI.Instance.ShowYapping(befYap.npcT);
+                Manager_Audio.Instance.PlayAudioClip(audioNpcTalk, befYap.npcV);
                 yield return new WaitForSeconds(yap);
             }
             Manager_UI.Instance.HideYapping();
         }
     }
-    private IEnumerator AfYappingPerSec(float yap)
+    private IEnumerator AfYappingPerSec(float yap) // kode yapping handling ketika sudah selelsaiin quest
     {
         // foreach (var questStep in currentQst.questStep)
         {
@@ -154,13 +156,15 @@ public class Manager_Quest : MonoBehaviour
         }
     }
 
-    public void InteractWithNPC(string npcName)
+    public void InteractWithNPC(NPCQuestGiver npcSc)
     {
         if (currentQst == null) return;
         if (!objectiveDone) return;
 
+        audioNpcTalk = npcSc.audioSrc;
+
         if (currentStepQst.completionMode == QuestCompletionMode.ReturnToNPC &&
-            npcName == currentStepQst.npcTalkBefore[0].npcName)
+            npcSc.npcName == currentStepQst.npcTalkBefore[0].npcName)
         {
             StartCoroutine(AfYappingPerSec(5f));
             CompleteQuest();
