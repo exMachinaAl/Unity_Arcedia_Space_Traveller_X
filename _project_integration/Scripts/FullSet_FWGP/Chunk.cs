@@ -7,6 +7,7 @@ public class Chunk
     public GameObject chunkObject;
     public MeshRenderer renderer;
     public MeshFilter filter;
+    public float[,] heightMap;
     public List<GameObject> spawnedObjects = new List<GameObject>();
 
 

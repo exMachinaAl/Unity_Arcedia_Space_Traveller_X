@@ -159,11 +159,12 @@ public class Game_SaveSystem : MonoBehaviour
         // save.universeSeed = rng.NextInt(1, int.MaxValue);
         save.galaxySeed = SeedUtil.SubSeed((long)save.universeSeed, 0);
         save.playerMode = PlayerMode.Human; // ini debug fast space loh ya, kalo new game
-        save.playerInThe = PlayerInThe.Space;
+        // save.playerInThe = PlayerInThe.Space;
         // save.playerMode = PlayerMode.Human;
-        // save.playerInThe = PlayerInThe.Ground;
+        save.playerInThe = PlayerInThe.Ground;
         save.scienceCredit = 0;
-        save.lastWorld = SeedUtil.SubSeed(save.galaxySeed, 0);
+        // save.lastWorld = SeedUtil.SubSeed(save.galaxySeed, 0);
+        save.lastWorld = SeedUtil.SurfaceSeedV3(save.galaxySeed, 0);
         // save.world
 
         if (Root_GameStartManager.isDebugMode)

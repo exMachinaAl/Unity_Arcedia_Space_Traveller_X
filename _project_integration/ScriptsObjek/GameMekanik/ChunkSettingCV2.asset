@@ -13,20 +13,24 @@ MonoBehaviour:
   m_Name: ChunkSettingCV2
   m_EditorClassIdentifier: 
   chunkSize: 32
-  noiseScale: 100
+  noiseScale: 120
   heightMultiplier: 1
   viewDistance: 5
   baseHeight: -20
   maxHeight: 80
   vertexPerLine: 33
   grassMin: 0.25
-  grassMax: 0.55
+  grassMax: 0.35
   grassFlatLevel: 0.32
   mountainStrength: 0.6
-  waterLevel: 0.25
-  sandLevel: 0.35
-  grassLevel: 0.6
-  hillLevel: 0.8
+  waterLevelWorld: 2
+  waterColor: {r: 0, g: 0, b: 1, a: 1}
+  sandLevelWorld: 5
+  sandColor: {r: 0.9, g: 0.85, b: 0.5, a: 1}
+  grassLevelWorld: 15
+  grassColor: {r: 0, g: 1, b: 0, a: 1}
+  hillLevelWorld: 35
+  hillColor: {r: 0.3, g: 0.5, b: 0.2, a: 1}
   terrainGradient:
     serializedVersion: 2
     key0: {r: 0.24951048, g: 0.5943396, b: 0.5943396, a: 1}
@@ -37,8 +41,8 @@ MonoBehaviour:
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 20432
+    ctime0: 4626
+    ctime1: 18119
     ctime2: 43754
     ctime3: 65535
     ctime4: 0
@@ -62,4 +66,4 @@ MonoBehaviour:
   treePrefab: {fileID: 5358406638248718189, guid: 0170c09ceea46b24599abaeea39b4fed,
     type: 3}
   treesPerChunk: 3
-  seed: 56976
+  seed: -7613203

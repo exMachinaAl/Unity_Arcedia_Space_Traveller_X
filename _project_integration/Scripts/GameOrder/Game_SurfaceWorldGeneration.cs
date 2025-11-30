@@ -8,12 +8,12 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
     public GameObject chunkPrefab;
 
     float maxSlopeGrass = 0.6f;
-    int grassStep = 3;
+    int grassStep = 2;
 
-    Queue<Chunk> treeSpawnQueue = new Queue<Chunk>();
+    Queue<Chunk> VegetationSpawnQueue = new Queue<Chunk>();
     // Queue<Chunk> treeSpawnQueue = new Queue<Chunk>();
 
-    [SerializeField]public float[,] heightMap;
+    // [SerializeField]public float[,] heightMap;
 
     Dictionary<Vector2Int, Chunk> loadedChunks = new Dictionary<Vector2Int, Chunk>();
     //public List<GameObject> spawnedObjects = new List<GameObject>();
@@ -28,7 +28,7 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
         // {
         //     player = Manager_Player.Instance.flightCtrl.shipTransform;
         // }
-        heightMap = new float[settings.vertexPerLine, settings.vertexPerLine];
+        // heightMap = new float[settings.vertexPerLine, settings.vertexPerLine];
 
         //settings re Set
         settings.seed = (int)Game_SaveSystem.Instance.getFullSaveData().lastWorld;
@@ -36,12 +36,14 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
         player = Manager_Player.Instance.GetCurrentModePlayerTransform();
 
         // if (Manager)
-        Manager_Landing.Instance.surfaceRootPosition = transform;
+        // Manager_Landing.Instance.surfaceRootPosition = transform;
     }
     void Update()
     {
         var playerCurrentStateWorld = Game_SaveSystem.Instance.GetPlayerInStateWorld();
         if (playerCurrentStateWorld == PlayerInThe.Atmosphere || playerCurrentStateWorld == PlayerInThe.Space) return;
+        if (player == null)
+            OnChangePlayerTransform();
         // if (Manager_Landing.Instance.isInAtmosphere || Manager_Landing.Instance.isInSpace) return;
 
         Vector2Int playerChunk = new Vector2Int(
@@ -72,25 +74,25 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
 
         // Load in sorted priority
         foreach (var c in toLoad)
-            LoadChunk(c);
+            LoadChunkV2(c);
 
         // SpawnGrass();
 
         // tree spawner
-        if (treeSpawnQueue.Count > 0)
+        if (VegetationSpawnQueue.Count > 0)
         {
-            Chunk c = treeSpawnQueue.Peek();
+            Chunk c = VegetationSpawnQueue.Peek();
 
             // kalau chunk sudah hilang dari loadedChunks, skip
             if (!loadedChunks.ContainsKey(c.coord) || c.chunkObject == null)
             {
-                treeSpawnQueue.Dequeue();
+                VegetationSpawnQueue.Dequeue();
                 return;
             }
 
-            treeSpawnQueue.Dequeue();
+            VegetationSpawnQueue.Dequeue();
             // SpawnTrees(c, c.coord);
-            SpawnGrass(c, c.coord);
+            SpawnGrassV2(c, c.coord);
         }
 
         // unload chunks too far
@@ -120,24 +122,50 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
 
     }
 
-    void LoadChunk(Vector2Int coord)
+    // void LoadChunk(Vector2Int coord)
+    // {
+    //     Chunk chunk = new Chunk(coord, chunkPrefab, transform);
+
+    //     // Mesh mesh = ChunkGenerator.GenerateTerrainMesh(settings, coord);
+    //     Mesh mesh = ChunkGenerator.GenerateTerrainMeshV2(settings, coord, heightMap);
+    //     chunk.filter.mesh = mesh;
+
+    //     // --- Tambahkan collider ---
+    //     MeshCollider col = chunk.chunkObject.AddComponent<MeshCollider>();
+    //     col.sharedMesh = mesh;
+    //     //SpawnTrees(chunk, coord);
+    //     chunk.SetPosition(new Vector3(coord.x * settings.chunkSize, 0, coord.y * settings.chunkSize));
+    //     loadedChunks.Add(coord, chunk);
+
+    //     VegetationSpawnQueue.Enqueue(chunk);
+    // }
+
+    void LoadChunkV2(Vector2Int coord)
     {
         Chunk chunk = new Chunk(coord, chunkPrefab, transform);
 
-        // Mesh mesh = ChunkGenerator.GenerateTerrainMesh(settings, coord);
-        Mesh mesh = ChunkGenerator.GenerateTerrainMeshV2(settings, coord, heightMap);
+        // BUAT HEIGHTMAP PER-CHUNK (penting!)
+        float[,] chunkHeightMap = new float[settings.vertexPerLine, settings.vertexPerLine];
+
+        // Generate mesh dan isi chunkHeightMap
+        Mesh mesh = ChunkGenerator.GenerateTerrainMeshV3(settings, coord, chunkHeightMap);
         chunk.filter.mesh = mesh;
 
-        // --- Tambahkan collider ---
+        // Tambahkan collider
         MeshCollider col = chunk.chunkObject.AddComponent<MeshCollider>();
         col.sharedMesh = mesh;
-        //SpawnTrees(chunk, coord);
-        treeSpawnQueue.Enqueue(chunk);
 
-
+        // set posisi chunk DI DUNIA sebelum enqueue spawn vegetasi
         chunk.SetPosition(new Vector3(coord.x * settings.chunkSize, 0, coord.y * settings.chunkSize));
         loadedChunks.Add(coord, chunk);
+
+        // simpan heightmap ke chunk supaya spawn memakai data lokal
+        chunk.heightMap = chunkHeightMap;
+
+        // baru enqueue vegetasi
+        VegetationSpawnQueue.Enqueue(chunk);
     }
+
 
     void SpawnTrees(Chunk chunk, Vector2Int coord)
     {
@@ -199,49 +227,111 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
         }
     }
 
-    public void SpawnGrass(Chunk chunk, Vector2Int coord)
+    public void SpawnGrassV2(Chunk chunk, Vector2Int coord)
     {
-        float waterLevel = settings.waterLevel;
+        float waterLevel = settings.waterLevelWorld;
         int vertexPerLine = settings.vertexPerLine;
         int seed = settings.seed;
         int size = settings.chunkSize;
+
+        // chunk world offset (in world units)
+        float chunkWorldX = coord.x * size;
+        float chunkWorldZ = coord.y * size;
 
         for (int x = 0; x < vertexPerLine - 1; x += grassStep)
         {
             for (int z = 0; z < vertexPerLine - 1; z += grassStep)
             {
-                float h = heightMap[x, z];
+                // AMBIL DARI heightMap LOKAL milik chunk
+                float h = chunk.heightMap[x, z];
 
-                // 1. Jangan di air
+                // 1. Jangan di air (bandingkan dengan waterLevel world-space)
                 if (h < waterLevel)
                     continue;
 
-                // 2. Hitung slope
-                float slope = Mathf.Abs(heightMap[x + 1, z] - h);
-
-                // 3. Jangan di tanah curam
+                // 2. Slope (cek safe bound)
+                float neighborH = chunk.heightMap[Mathf.Min(x + 1, vertexPerLine - 1), z];
+                float slope = Mathf.Abs(neighborH - h);
                 if (slope > maxSlopeGrass)
                     continue;
 
-                // 4. Density (agar tidak semua titik ditanami)
+                // 3. Density — gunakan world pos untuk Perlin density
                 float density = Mathf.PerlinNoise(
-                    (coord.x + x) * 0.15f + seed,
-                    (coord.y + z) * 0.15f + seed
+                    (chunkWorldX + x) * 0.12f + seed,
+                    (chunkWorldZ + z) * 0.12f + seed
                 );
 
                 if (density < 0.5f)
                     continue;
 
-                // 5. Posisi world
-                float worldX = coord.x * size + x;
-                float worldZ = coord.y * size + z; // jan bingung lah ya, apa kenapa itu Y, itu Vector2
-                Vector3 spawnPos = new Vector3(worldX, h, worldZ);
+                // 4. POSISI LOKAL untuk child chunk (x,z dalam range 0..chunkSize)
+                Vector3 localPos = new Vector3(x, h, z);
 
-                GameObject grass = Instantiate(settings.grassPrefab, spawnPos, Quaternion.identity, chunk.chunkObject.transform);
+                // Instantiate as child and set localPosition — ini menghindari double-offset
+                GameObject grass = Instantiate(settings.grassPrefab, chunk.chunkObject.transform);
+                grass.transform.localPosition = localPos;
+                grass.transform.localRotation = Quaternion.identity;
+
                 chunk.spawnedObjects.Add(grass);
             }
         }
     }
+
+    // public void SpawnGrass(Chunk chunk, Vector2Int coord)
+    // {
+    //     float waterLevel = settings.waterLevel;
+    //     int vertexPerLine = settings.vertexPerLine;
+    //     int seed = settings.seed;
+    //     int size = settings.chunkSize;
+
+    //     for (int x = 0; x < vertexPerLine - 1; x += grassStep)
+    //     {
+    //         for (int z = 0; z < vertexPerLine - 1; z += grassStep)
+    //         {
+    //             float h = heightMap[x, z];
+
+    //             // 1. Jangan di air
+    //             if (h < waterLevel)
+    //                 continue;
+
+    //             // 2. Hitung slope
+    //             float slope = Mathf.Abs(heightMap[x + 1, z] - h);
+
+    //             // 3. Jangan di tanah curam
+    //             if (slope > maxSlopeGrass)
+    //                 continue;
+
+    //             // 4. Density (agar tidak semua titik ditanami)
+    //             float density = Mathf.PerlinNoise(
+    //                 (coord.x + x) * 0.15f + seed,
+    //                 (coord.y + z) * 0.15f + seed
+    //             );
+
+    //             if (density < 0.5f)
+    //                 continue;
+
+    //             // 5. Posisi world
+    //             float worldX = coord.x * size + x;
+    //             float worldZ = coord.y * size + z; // jan bingung lah ya, apa kenapa itu Y, itu Vector2
+    //             Vector3 spawnPos = new Vector3(worldX, h, worldZ);
+
+    //             Debug.DrawLine(
+    //                 new Vector3(worldX, h + 20, worldZ),
+    //                 new Vector3(worldX, h, worldZ),
+    //                 Color.red,
+    //                 10f
+    //             );
+
+    //             GameObject grass = Instantiate(settings.grassPrefab, spawnPos, Quaternion.identity, chunk.chunkObject.transform);
+    //             // GameObject grass = Instantiate(
+    //             //     settings.grassPrefab,
+    //             //     chunk.chunkObject.transform
+    //             // );
+    //             // grass.transform.localPosition = spawnPos;
+    //             chunk.spawnedObjects.Add(grass);
+    //         }
+    //     }
+    // }
 
 
     public void OnChangePlayerTransform()

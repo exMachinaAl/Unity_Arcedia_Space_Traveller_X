@@ -1,22 +1,13 @@
 {
-    "playerId": "44a48a4d-a139-4865-acaa-802718cf5ff5",
+    "playerId": "d12faf62-ab7a-44c1-bdfd-4bee952f4cad",
     "playerName": "Mod",
     "universeSeed": 217542405,
     "galaxySeed": 16066832095123665,
     "playerMode": 0,
     "playerInThe": 0,
     "scienceCredit": 1000,
-    "planetsInterrupted": [
-        {
-            "planetId": -8707340749787613203,
-            "depletedNodes": [
-                -36673135297669,
-                -36673135297391,
-                -36673135296585
-            ]
-        }
-    ],
-    "lastWorld": -8707340749787613203,
+    "planetsInterrupted": [],
+    "lastWorld": -7613203,
     "worldSession": {
         "planetId": 1,
         "planetSeed": -8707340749772458126,
@@ -30,15 +21,15 @@
             "z": -105.0
         },
         "entryNormal": {
-            "x": -0.9648095369338989,
-            "y": 0.24224752187728883,
-            "z": 0.10226794332265854
+            "x": -0.8440952301025391,
+            "y": 0.5223677158355713,
+            "z": 0.12097553163766861
         },
         "entryPosition": {
-            "x": 640.0613403320313,
-            "y": -55.01734161376953,
-            "z": -71.12627410888672
+            "x": 739.0446166992188,
+            "y": 110.72492980957031,
+            "z": -50.63853073120117
         }
     },
-    "checksum": "F463932FFD4D7B245A5B27F9145477B8367E5D5EE906CFF1C11EBE189567A44A"
+    "checksum": "93312D58CAB95BF38908008464A088A4B57018A29FEC35EB4D19C0712458EB80"
 }

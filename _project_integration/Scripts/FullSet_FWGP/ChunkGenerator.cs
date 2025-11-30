@@ -2,6 +2,24 @@ using UnityEngine;
 
 public static class ChunkGenerator
 {
+    // public static float FBM(float worldX, float worldZ, int seed, float noiseScale)
+    // {
+    //     float total = 0f;
+    //     float amplitude = 1f;
+    //     float frequency = 1f;
+
+    //     for(int i = 0; i < 5; i++){
+    //         float x = (worldX + seed) / noiseScale * frequency;
+    //         float z = (worldZ + seed) / noiseScale * frequency;
+
+    //         total += Mathf.PerlinNoise(x, z) * amplitude;
+
+    //         amplitude *= 0.5f;
+    //         frequency *= 2f;
+    //     }
+
+    //     return total; // 0..1 kira-kira
+    // }
     public static float FBM(float worldX, float worldZ, int seed, float noiseScale)
     {
         float total = 0f;
@@ -18,8 +36,160 @@ public static class ChunkGenerator
             frequency *= 2f;
         }
 
-        return total; // 0..1 kira-kira
+        // Optional: normalize by max amplitude (1 + 0.5 + 0.25 + ...) -> 1.96875
+        float maxAmp = 1f;
+        float amp = 1f;
+        for(int i = 1; i < 5; i++){
+            amp *= 0.5f;
+            maxAmp += amp;
+        }
+        total /= maxAmp;
+
+        return total; // approximately 0..1
     }
+
+
+    public static Mesh GenerateTerrainMeshV3(ChunkSettings settings, Vector2Int chunkCoord, float[,] heightMap)
+    {
+        float minH = float.MaxValue;
+        float maxH = float.MinValue;
+        float avgH = 0f;
+
+        int chunkSize = settings.chunkSize;
+        int vertexPerLine = settings.vertexPerLine;
+        int seed = settings.seed;
+        float baseHeight = settings.baseHeight;
+        float maxHeight = settings.maxHeight;
+
+        float grassMin = settings.grassMin;
+        float grassMax = settings.grassMax;
+        float grassFlatLevel = settings.grassFlatLevel;
+        float mountainStrength = settings.mountainStrength;
+
+        Gradient terrainGradient = settings.terrainGradient;
+
+        int vCount = vertexPerLine * vertexPerLine;
+        Vector3[] vertices = new Vector3[vCount];
+        int[] triangles = new int[(vertexPerLine - 1) * (vertexPerLine - 1) * 6];
+        Color[] colors = new Color[vCount];
+
+        int triIndex = 0;
+
+        for (int z = 0; z < vertexPerLine; z++)
+        {
+            for (int x = 0; x < vertexPerLine; x++)
+            {
+                int i = z * vertexPerLine + x;
+
+                // world coordinates (untuk noise)
+                float worldX = chunkCoord.x * chunkSize + x;
+                float worldZ = chunkCoord.y * chunkSize + z;
+
+                // continent (low freq)
+                float continent = Mathf.PerlinNoise(
+                    (worldX + seed) / 600f,
+                    (worldZ + seed) / 600f
+                );
+
+                // detail (FBM)
+                float detail = FBM(worldX, worldZ, seed, settings.noiseScale);
+
+                float height01 = Mathf.Lerp(continent, detail, 0.45f);
+                height01 = Mathf.Pow(height01, 2.0f);
+
+                // mountain mask langka
+                float mountainMask = Mathf.PerlinNoise(
+                    (worldX + seed + 9999) / 900f,
+                    (worldZ + seed + 9999) / 900f
+                );
+                mountainMask = Mathf.Pow(mountainMask, 4.0f);
+
+                // flatten plains
+                // float plainMask = Mathf.InverseLerp(grassMin, grassMax, height01);
+                // plainMask = Mathf.SmoothStep(0f, 1f, plainMask);
+                // float flattenedHeight01 = Mathf.Lerp(grassFlatLevel, height01, plainMask);
+                // flattenedHeight01 += mountainMask * mountainStrength;
+                // float flattenedHeight01 = height01 + mountainMask * mountainStrength;
+
+                float flattenedHeight01;
+                if (height01 < grassMin)
+                    flattenedHeight01 = height01;
+                else
+                {
+                    float plainMask = Mathf.InverseLerp(grassMin, grassMax, height01);
+                    plainMask = Mathf.SmoothStep(0f, 1f, plainMask);
+                    flattenedHeight01 = Mathf.Lerp(grassFlatLevel, height01, plainMask);
+                    flattenedHeight01 += mountainMask * mountainStrength;
+                }
+
+
+                // final height in world space units
+                float height = baseHeight + flattenedHeight01 * maxHeight;
+
+                // SIMPAN KE heightMap lokal
+                heightMap[x, z] = height;
+
+                // stats debug logging chunks
+                float h = heightMap[x, z];
+                minH = Mathf.Min(minH, h);
+                maxH = Mathf.Max(maxH, h);
+                avgH += h;
+
+                // vertices in local chunk coordinates (chunk transform places it in world)
+                vertices[i] = new Vector3(x, height, z);
+
+                // WARNA: gunakan height final -> normalisasi ke 0..1 berdasarkan baseHeight..baseHeight+maxHeight
+                // float color01 = Mathf.InverseLerp(baseHeight, baseHeight + maxHeight, height);
+                // colors[i] = terrainGradient.Evaluate(color01);
+
+                // alternatif: warna berdasarkan level ketinggian tetap
+                // float h = height;
+                if (height < settings.waterLevelWorld)
+                    colors[i] = Color.blue;
+                else if (height < settings.sandLevelWorld)
+                    colors[i] = new Color(0.9f, 0.85f, 0.5f);
+                else if (height < settings.grassLevelWorld)
+                    colors[i] = Color.green;
+                else if (height < settings.hillLevelWorld)
+                    colors[i] = new Color(0.3f, 0.5f, 0.2f);
+                else
+                    colors[i] = Color.gray;
+
+
+                // TRIANGLES
+                if (x < vertexPerLine - 1 && z < vertexPerLine - 1)
+                {
+                    int a = i;
+                    int b = i + vertexPerLine;
+                    int c = i + vertexPerLine + 1;
+                    int d = i + 1;
+
+                    triangles[triIndex++] = a;
+                    triangles[triIndex++] = b;
+                    triangles[triIndex++] = c;
+
+                    triangles[triIndex++] = a;
+                    triangles[triIndex++] = c;
+                    triangles[triIndex++] = d;
+                }
+            }
+        }
+
+        
+        avgH /= (vertexPerLine * vertexPerLine);
+
+        Debug.Log($"[CHUNK {chunkCoord}] Min:{minH:F1} Max:{maxH:F1} Avg:{avgH:F1}");
+
+        Mesh mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32; // jika chunk besar
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.colors = colors;
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+        return mesh;
+    }
+
 
     public static Mesh GenerateTerrainMeshV2(ChunkSettings settings, Vector2Int chunkCoord, float[,] heightMap) 
     {
@@ -99,10 +269,19 @@ public static class ChunkGenerator
                 vertices[i] = new Vector3(x, height, z);
 
                 // ✅ WARNA GRADIEN
-                colors[i] = terrainGradient.Evaluate(height01);
+                // colors[i] = terrainGradient.Evaluate(height01); // error !!! miss terrain color
+                float color01 = Mathf.InverseLerp(
+                    baseHeight,
+                    baseHeight + maxHeight,
+                    height
+                );
+
+                colors[i] = terrainGradient.Evaluate(color01);
+
 
                 // ✅ TRIANGLE
-                if(x < vertexPerLine - 1 && z < vertexPerLine - 1){
+                if (x < vertexPerLine - 1 && z < vertexPerLine - 1)
+                {
                     int a = i;
                     int b = i + vertexPerLine;
                     int c = i + vertexPerLine + 1;

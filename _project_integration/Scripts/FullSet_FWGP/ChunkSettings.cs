@@ -15,15 +15,19 @@ public class ChunkSettings : ScriptableObject
 
     [Header("terrain Levels")]
     public float grassMin = 0.25f;
-    public float grassMax = 0.55f;
+    public float grassMax = 0.35f;
     public float grassFlatLevel = 0.32f;
     public float mountainStrength = 0.6f;
 
     [Header("Height Levels")]
-    public float waterLevel = 0.25f;
-    public float sandLevel  = 0.35f;
-    public float grassLevel = 0.60f;
-    public float hillLevel  = 0.80f;
+    public float waterLevelWorld = 2f;
+    public Color waterColor = Color.blue;
+    public float sandLevelWorld = 5f;
+    public Color sandColor = new Color(0.9f, 0.85f, 0.5f);
+    public float grassLevelWorld = 15f;
+    public Color grassColor = Color.green;
+    public float hillLevelWorld  = 35f;
+    public Color hillColor = new Color(0.3f, 0.5f, 0.2f);
 
     [Header("Colors")]
     public Gradient terrainGradient;
