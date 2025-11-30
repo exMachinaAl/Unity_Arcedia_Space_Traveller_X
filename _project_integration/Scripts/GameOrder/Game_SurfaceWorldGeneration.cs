@@ -7,8 +7,8 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
     public ChunkSettings settings;
     public GameObject chunkPrefab;
 
-    float maxSlopeGrass = 0.6f;
-    int grassStep = 2;
+    // float maxSlopeGrass = 0.6f;
+    // int grassStep = 2;
 
     Queue<Chunk> VegetationSpawnQueue = new Queue<Chunk>();
     // Queue<Chunk> treeSpawnQueue = new Queue<Chunk>();
@@ -92,7 +92,11 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
 
             VegetationSpawnQueue.Dequeue();
             // SpawnTrees(c, c.coord);
-            SpawnGrassV2(c, c.coord);
+            // SpawnGrassV2(c, c.coord);
+            SpawnGrassV3(c, c.coord);
+            SpawnBushesV1(c, c.coord);
+            SpawnTreesV2(c, c.coord);
+            SpawnRocks(c, c.coord);
         }
 
         // unload chunks too far
@@ -167,115 +171,404 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
     }
 
 
-    void SpawnTrees(Chunk chunk, Vector2Int coord)
+    public void SpawnRocks(Chunk chunk, Vector2Int coord)
     {
-        // PRNG berdasarkan chunk + seed → konsisten
-        // int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ settings.seed;
-        // Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
-
-        long planetId = Game_SaveSystem.Instance.getCurrentPlanetId();
-        int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ (int)planetId;
-        Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
-
-
-        // int galaxySeed = SeedUtil.SubSeed(Game_SeedManager.Instance.universeSeed, 0);
-        // int seedWorld = SeedUtil.SubSeed(galaxySeed, 0);
-
         int size = settings.chunkSize;
+        int seed = settings.seed;
+        int attempts = settings.rocksPerChunk * 5;
 
-        for (int i = 0; i < settings.treesPerChunk; i++)
+        int placed = 0;
+
+        for (int i = 0; i < attempts; i++)
         {
-            float x = prng.NextFloat(0, size);
-            float z = prng.NextFloat(0, size);
+            if (placed >= settings.rocksPerChunk)
+                break;
 
-            // world pos height check
+            int x = Random.Range(1, settings.vertexPerLine - 2);
+            int z = Random.Range(1, settings.vertexPerLine - 2);
+
+            float h = chunk.heightMap[x, z];
+
+            // 1. HEIGHT FILTER
+            // if (h < settings.waterLevelWorld || h > settings.mountainLevelWorld)
+            if (h < settings.waterLevelWorld)
+                continue;
+
+            // 2. SLOPE FILTER
+            float slope =
+                Mathf.Abs(chunk.heightMap[x + 1, z] - h) +
+                Mathf.Abs(chunk.heightMap[x - 1, z] - h) +
+                Mathf.Abs(chunk.heightMap[x, z + 1] - h) +
+                Mathf.Abs(chunk.heightMap[x, z - 1] - h);
+
+            if (slope > settings.maxSlopeRock)
+                continue;
+
+            // 3. WORLD POS
             float worldX = coord.x * size + x;
             float worldZ = coord.y * size + z;
+            Vector3 pos = new Vector3(worldX, h, worldZ);
 
-            long resourceId = SeedUtil.makeResourcesId((int)planetId, new Vector2Int(Mathf.RoundToInt(x), Mathf.RoundToInt(z)), i);
+            // 4. CEK KONFLIK DENGAN POHON & BATU LAIN
+            bool blocked = false;
+            for (int j = 0; j < chunk.occupiedPositions.Count; j++)
+            {
+                if (Vector3.Distance(pos, chunk.occupiedPositions[j]) < settings.minRockDistance)
+                {
+                    blocked = true;
+                    break;
+                }
+            }
 
-
-            // float noise = Mathf.PerlinNoise(
-            //     (worldX + settings.seed) / settings.noiseScale,
-            //     (worldZ + settings.seed) / settings.noiseScale
-            // );
-
-            // float noise = Mathf.PerlinNoise( //TEST MODE
-            //     (worldX + planetId) / settings.noiseScale,
-            //     (worldZ + planetId) / settings.noiseScale
-            // );
-            double nx = (worldX / (double)settings.noiseScale) + planetId * 0.0000000000001;
-            double nz = (worldZ / (double)settings.noiseScale) + planetId * 0.0000000000001;
-
-            float hght = Mathf.PerlinNoise((float)nx, (float)nz) * settings.maxHeight;
-            // float hght = Mathf.PerlinNoise((float)nx, (float)nz) * settings.heightMultiplier;
-
-            float height = Mathf.Round(hght * 1000f) / 1000f;
-
-            // baru spawn pohon
-            Vector3 pos = new Vector3(worldX, height, worldZ);
-
-            if (prng.NextDouble() < 0.8f)
+            if (blocked)
                 continue;
 
-            if (Game_SaveSystem.Instance.IsNodeDepleted(planetId, resourceId))
+            // 5. SPAWN BATU
+            GameObject rock = Instantiate(
+                settings.rockPrefab,
+                pos,
+                Quaternion.Euler(0, Random.Range(0, 360f), 0),
+                chunk.chunkObject.transform
+            );
+
+            chunk.occupiedPositions.Add(pos);
+            chunk.spawnedObjects.Add(rock);
+            placed++;
+        }
+
+        Debug.Log($"[ROCK] Chunk {coord} : {placed}");
+    }
+
+
+    public void SpawnTreesV2(Chunk chunk, Vector2Int coord)
+    {
+        int size = settings.chunkSize;
+        int seed = settings.seed;
+        int attempts = settings.treesPerChunk * 4; // buffer retry
+
+        List<Vector3> usedPositions = new List<Vector3>();
+
+        for (int i = 0; i < attempts; i++)
+        {
+            if (usedPositions.Count >= settings.treesPerChunk)
+                break;
+
+            int x = Random.Range(1, settings.vertexPerLine - 2);
+            int z = Random.Range(1, settings.vertexPerLine - 2);
+
+            float h = chunk.heightMap[x, z];
+
+            // 1. HEIGHT FILTER
+            if (h < settings.sandLevelWorld || h > settings.mountainLevelWorld)
                 continue;
 
-            GameObject tree = Instantiate(settings.treePrefab, pos, Quaternion.identity, chunk.chunkObject.transform);
+            // 2. SLOPE FILTER
+            float slope =
+                Mathf.Abs(chunk.heightMap[x + 1, z] - h) +
+                Mathf.Abs(chunk.heightMap[x - 1, z] - h) +
+                Mathf.Abs(chunk.heightMap[x, z + 1] - h) +
+                Mathf.Abs(chunk.heightMap[x, z - 1] - h);
+
+            if (slope > settings.maxSlopeTree)
+                continue;
+
+            // #menentukan selisih terrain world, apabila ada jalan nanjak, maka tree nggak boleh spawn
+
+            // 3. WORLD POS
+            float worldX = coord.x * size + x;
+            float worldZ = coord.y * size + z;
+            Vector3 pos = new Vector3(worldX, h, worldZ);
+
+            // 4. DISTANCE FILTER (ANTI NUMPUK)
+            bool tooClose = false;
+            for (int j = 0; j < chunk.occupiedPositions.Count; j++)
+            {
+                if (Vector3.Distance(pos, chunk.occupiedPositions[j]) < settings.minTreeDistance)
+                {
+                    tooClose = true;
+                    break;
+                }
+            }
+
+            if (tooClose)
+                continue;
+
+            // 5. SPAWN
+            GameObject tree = Instantiate(
+                settings.treePrefab,
+                pos,
+                Quaternion.Euler(0, Random.Range(0, 360f), 0),
+                chunk.chunkObject.transform
+            );
+
+            usedPositions.Add(pos);
             chunk.spawnedObjects.Add(tree);
-            tree.GetComponent<Game_ResourceNode>().Init(resourceId);
+        }
+
+        Debug.Log($"[TREE] Chunk {coord} : {usedPositions.Count}");
+    }
+
+    // void SpawnTrees(Chunk chunk, Vector2Ihnt coord)
+    // {
+    //     // PRNG berdasarkan chunk + seed → konsisten
+    //     // int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ settings.seed;
+    //     // Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
+
+    //     long planetId = Game_SaveSystem.Instance.getCurrentPlanetId();
+    //     int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ (int)planetId;
+    //     Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
+
+
+    //     // int galaxySeed = SeedUtil.SubSeed(Game_SeedManager.Instance.universeSeed, 0);
+    //     // int seedWorld = SeedUtil.SubSeed(galaxySeed, 0);
+
+    //     int size = settings.chunkSize;
+
+    //     for (int i = 0; i < settings.treesPerChunk; i++)
+    //     {
+    //         float x = prng.NextFloat(0, size);
+    //         float z = prng.NextFloat(0, size);
+
+    //         // world pos height check
+    //         float worldX = coord.x * size + x;
+    //         float worldZ = coord.y * size + z;
+
+    //         long resourceId = SeedUtil.makeResourcesId((int)planetId, new Vector2Int(Mathf.RoundToInt(x), Mathf.RoundToInt(z)), i);
+
+
+    //         // float noise = Mathf.PerlinNoise(
+    //         //     (worldX + settings.seed) / settings.noiseScale,
+    //         //     (worldZ + settings.seed) / settings.noiseScale
+    //         // );
+
+    //         // float noise = Mathf.PerlinNoise( //TEST MODE
+    //         //     (worldX + planetId) / settings.noiseScale,
+    //         //     (worldZ + planetId) / settings.noiseScale
+    //         // );
+    //         double nx = (worldX / (double)settings.noiseScale) + planetId * 0.0000000000001;
+    //         double nz = (worldZ / (double)settings.noiseScale) + planetId * 0.0000000000001;
+
+    //         float hght = Mathf.PerlinNoise((float)nx, (float)nz) * settings.maxHeight;
+    //         // float hght = Mathf.PerlinNoise((float)nx, (float)nz) * settings.heightMultiplier;
+
+    //         float height = Mathf.Round(hght * 1000f) / 1000f;
+
+    //         // baru spawn pohon
+    //         Vector3 pos = new Vector3(worldX, height, worldZ);
+
+    //         if (prng.NextDouble() < 0.8f)
+    //             continue;
+
+    //         if (Game_SaveSystem.Instance.IsNodeDepleted(planetId, resourceId))
+    //             continue;
+
+    //         GameObject tree = Instantiate(settings.treePrefab, pos, Quaternion.identity, chunk.chunkObject.transform);
+    //         chunk.spawnedObjects.Add(tree);
+    //         tree.GetComponent<Game_ResourceNode>().Init(resourceId);
+    //     }
+    // }
+    
+    public void SpawnBushesV1(Chunk chunk, Vector2Int coord)
+    {
+        int size = settings.chunkSize;
+        int vertexPerLine = settings.vertexPerLine;
+        int seed = settings.seed;
+
+        float sandLevel = settings.sandLevelWorld;
+        float hillLevelOrOther = settings.hillLevelWorld;
+
+        // int vertexPerLine = settings.vertexPerLine;
+        // int seed = settings.seed;
+        // int size = settings.chunkSize;
+        float minGrassSpacing = settings.minGrassSpacing;
+        // float maxGrassSpacing = settings.maxGrassSpacing;
+        float densityThreshold = settings.grassDensityThreshold;
+        float maxSlopeGrass = settings.maxSlopeGrass;
+
+        for (float x = 0; x < vertexPerLine - 1; x += 1f) // iterasi setiap 0.5 unit
+        {
+            for (float z = 0; z < vertexPerLine - 1; z += 1f) // iterasi setiap 0.5 unit
+            {
+                
+                int ix = Mathf.FloorToInt(x);  // Ambil nilai integer untuk akses heightMap
+                int iz = Mathf.FloorToInt(z);
+                float h = chunk.heightMap[ix, iz];
+
+                // 1. Cek ketinggian khusus bush
+                if (h < sandLevel || h >= hillLevelOrOther)
+                    continue;
+
+                // 2. Cek slope (kemiringan)
+                float slope = Mathf.Abs(chunk.heightMap[ix + 1, iz] - h);
+                if (slope > maxSlopeGrass * 1.5f)
+                    continue;
+
+                // 3. Random density
+                float noise = Mathf.PerlinNoise(
+                    (coord.x * size + x + seed) * 0.1f,
+                    (coord.y * size + z + seed) * 0.1f
+                );
+
+                if (noise > settings.bushDensityThreshold)
+                    continue;
+
+                // 4. World position
+                float worldX = coord.x * size + x;
+                float worldZ = coord.y * size + z;
+                Vector3 pos = new Vector3(worldX, h, worldZ);
+
+                GameObject bush = Instantiate(
+                    settings.bushPrefab,
+                    pos,
+                    Quaternion.identity,
+                    chunk.chunkObject.transform
+                );
+                // bush.transform.localPosition = pos;
+                // bush.transform.localRotation = Quaternion.identity;
+
+                chunk.spawnedObjects.Add(bush);
+            }
         }
     }
 
-    public void SpawnGrassV2(Chunk chunk, Vector2Int coord)
+
+    public void SpawnGrassV3(Chunk chunk, Vector2Int coord)
     {
-        float waterLevel = settings.waterLevelWorld;
+        float sandLevel = settings.sandLevelWorld;
+        float hillLevelOrOther = settings.hillLevelWorld;
+
         int vertexPerLine = settings.vertexPerLine;
         int seed = settings.seed;
         int size = settings.chunkSize;
+        float minGrassSpacing = settings.minGrassSpacing;
+        float maxGrassSpacing = settings.maxGrassSpacing;
+        float densityThreshold = settings.grassDensityThreshold;
+        float maxSlopeGrass = settings.maxSlopeGrass;
+
+        Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)seed);
 
         // chunk world offset (in world units)
         float chunkWorldX = coord.x * size;
         float chunkWorldZ = coord.y * size;
 
-        for (int x = 0; x < vertexPerLine - 1; x += grassStep)
-        {
-            for (int z = 0; z < vertexPerLine - 1; z += grassStep)
-            {
-                // AMBIL DARI heightMap LOKAL milik chunk
-                float h = chunk.heightMap[x, z];
 
-                // 1. Jangan di air (bandingkan dengan waterLevel world-space)
-                if (h < waterLevel)
+        List<Vector3> grassPositions = new List<Vector3>();
+        // Iterasi menggunakan interval 0.5 unit pada x dan z
+        for (float x = 0; x < vertexPerLine - 1; x += 0.5f) // iterasi setiap 0.5 unit
+        {
+            for (float z = 0; z < vertexPerLine - 1; z += 0.5f) // iterasi setiap 0.5 unit
+            {
+                // Ambil ketinggian dari heightMap lokal milik chunk
+                int ix = Mathf.FloorToInt(x);  // Ambil nilai integer untuk akses heightMap
+                int iz = Mathf.FloorToInt(z);
+                float h = chunk.heightMap[ix, iz];
+
+                // 1. Jangan spawn rumput di area air (bandingkan dengan waterLevel dalam world space)
+                if (h < sandLevel || h >= hillLevelOrOther)
                     continue;
 
-                // 2. Slope (cek safe bound)
-                float neighborH = chunk.heightMap[Mathf.Min(x + 1, vertexPerLine - 1), z];
+                // 2. Cek kemiringan (slope)
+                float neighborH = chunk.heightMap[Mathf.Min(ix + 1, vertexPerLine - 1), iz];
                 float slope = Mathf.Abs(neighborH - h);
                 if (slope > maxSlopeGrass)
                     continue;
 
-                // 3. Density — gunakan world pos untuk Perlin density
+                // 3. Menggunakan PerlinNoise untuk menentukan apakah rumput muncul di posisi ini atau tidak
                 float density = Mathf.PerlinNoise(
                     (chunkWorldX + x) * 0.12f + seed,
                     (chunkWorldZ + z) * 0.12f + seed
                 );
 
+                // Menggunakan threshold untuk kontrol densitas rumput
                 if (density < 0.5f)
                     continue;
 
-                // 4. POSISI LOKAL untuk child chunk (x,z dalam range 0..chunkSize)
-                Vector3 localPos = new Vector3(x, h, z);
+                // 4. Tentukan apakah jarak antar rumput terlalu dekat berdasarkan skala
+                Vector3 newGrassPosition = new Vector3(x, h, z);
 
-                // Instantiate as child and set localPosition — ini menghindari double-offset
+                bool tooClose = false;
+                foreach (Vector3 grassPos in grassPositions)
+                {
+                    // Menghitung jarak antar rumput dengan memperhitungkan skala
+                    float distance = Vector3.Distance(grassPos, newGrassPosition);
+
+                    // Jarak antar rumput harus lebih besar dari setidaknya jarak yang diperhitungkan berdasarkan skala
+                    float minDistanceWithScale = minGrassSpacing + Mathf.Max(settings.grassPrefab.transform.localScale.x, settings.grassPrefab.transform.localScale.z);
+
+                    if (distance < minDistanceWithScale)
+                    {
+                        tooClose = true;
+                        break;
+                    }
+                }
+
+                // Jika jarak antar rumput terlalu dekat, lanjutkan ke iterasi berikutnya
+                if (tooClose)
+                    continue;
+
+                // 5. Jika jarak aman, tambahkan rumput
+                grassPositions.Add(newGrassPosition);
+
+                // Instantiate rumput sebagai anak chunk dan atur posisi lokal untuk menghindari offset ganda
                 GameObject grass = Instantiate(settings.grassPrefab, chunk.chunkObject.transform);
-                grass.transform.localPosition = localPos;
+                grass.transform.localPosition = newGrassPosition;
                 grass.transform.localRotation = Quaternion.identity;
 
+                // Tambahkan objek yang telah dipasang ke dalam daftar spawnedObjects
                 chunk.spawnedObjects.Add(grass);
             }
         }
     }
+
+    // public void SpawnGrassV2(Chunk chunk, Vector2Int coord)
+    // {
+    //     float waterLevel = settings.waterLevelWorld;
+    //     int vertexPerLine = settings.vertexPerLine;
+    //     int seed = settings.seed;
+    //     int size = settings.chunkSize;
+
+    //     // chunk world offset (in world units)
+    //     float chunkWorldX = coord.x * size;
+    //     float chunkWorldZ = coord.y * size;
+
+    //     for (int x = 0; x < vertexPerLine - 1; x += grassStep)
+    //     {
+    //         for (int z = 0; z < vertexPerLine - 1; z += grassStep)
+    //         {
+    //             // AMBIL DARI heightMap LOKAL milik chunk
+    //             float h = chunk.heightMap[x, z];
+
+    //             // 1. Jangan di air (bandingkan dengan waterLevel world-space)
+    //             if (h < waterLevel)
+    //                 continue;
+
+    //             // 2. Slope (cek safe bound)
+    //             float neighborH = chunk.heightMap[Mathf.Min(x + 1, vertexPerLine - 1), z];
+    //             float slope = Mathf.Abs(neighborH - h);
+    //             if (slope > maxSlopeGrass)
+    //                 continue;
+
+    //             // 3. Density — gunakan world pos untuk Perlin density
+    //             float density = Mathf.PerlinNoise(
+    //                 (chunkWorldX + x) * 0.12f + seed,
+    //                 (chunkWorldZ + z) * 0.12f + seed
+    //             );
+
+    //             if (density < 0.5f)
+    //                 continue;
+
+    //             // 4. POSISI LOKAL untuk child chunk (x,z dalam range 0..chunkSize)
+    //             Vector3 localPos = new Vector3(x, h, z);
+
+    //             // Instantiate as child and set localPosition — ini menghindari double-offset
+    //             GameObject grass = Instantiate(settings.grassPrefab, chunk.chunkObject.transform);
+    //             grass.transform.localPosition = localPos;
+    //             grass.transform.localRotation = Quaternion.identity;
+
+    //             chunk.spawnedObjects.Add(grass);
+    //         }
+    //     }
+    // }
 
     // public void SpawnGrass(Chunk chunk, Vector2Int coord)
     // {

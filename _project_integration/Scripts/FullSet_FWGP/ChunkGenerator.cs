@@ -109,18 +109,19 @@ public static class ChunkGenerator
                 // plainMask = Mathf.SmoothStep(0f, 1f, plainMask);
                 // float flattenedHeight01 = Mathf.Lerp(grassFlatLevel, height01, plainMask);
                 // flattenedHeight01 += mountainMask * mountainStrength;
-                // float flattenedHeight01 = height01 + mountainMask * mountainStrength;
+                float flattenedHeight01 = height01 + mountainMask * mountainStrength;
 
-                float flattenedHeight01;
-                if (height01 < grassMin)
-                    flattenedHeight01 = height01;
-                else
-                {
-                    float plainMask = Mathf.InverseLerp(grassMin, grassMax, height01);
-                    plainMask = Mathf.SmoothStep(0f, 1f, plainMask);
-                    flattenedHeight01 = Mathf.Lerp(grassFlatLevel, height01, plainMask);
-                    flattenedHeight01 += mountainMask * mountainStrength;
-                }
+                // float flattenedHeight01;
+                // if (height01 < grassMin)
+                // {
+                //     flattenedHeight01 = height01;
+                //     flattenedHeight01 += mountainMask * mountainStrength;
+                // } else {
+                //     float plainMask = Mathf.InverseLerp(grassMin, grassMax, height01);
+                //     plainMask = Mathf.SmoothStep(0f, 1f, plainMask);
+                //     flattenedHeight01 = Mathf.Lerp(grassFlatLevel, height01, plainMask);
+                //     flattenedHeight01 += mountainMask * mountainStrength;
+                // }
 
 
                 // final height in world space units

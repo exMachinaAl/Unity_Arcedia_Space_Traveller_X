@@ -9,6 +9,7 @@ public class Chunk
     public MeshFilter filter;
     public float[,] heightMap;
     public List<GameObject> spawnedObjects = new List<GameObject>();
+    public List<Vector3> occupiedPositions = new List<Vector3>();
 
 
     public Chunk(Vector2Int coord, GameObject prefab, Transform parent)

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d06d3839887d8934e86fab9f0c1807eb, type: 3}
-  m_Name: ChunkSettingCV2
+  m_Name: ChunkSettingCV3
   m_EditorClassIdentifier: 
-  chunkSize: 32
+  chunkSize: 12
   noiseScale: 120
   heightMultiplier: 1
-  viewDistance: 5
+  viewDistance: 2
   baseHeight: -20
   maxHeight: 80
-  vertexPerLine: 33
+  vertexPerLine: 13
   grassMin: 0.25
   grassMax: 0.35
   grassFlatLevel: 0.32
@@ -38,9 +38,12 @@ MonoBehaviour:
   grassDensityThreshold: 0.5
   maxSlopeGrass: 0.6
   bushDensityThreshold: 0.6
-  minTreeDistance: 4.5
+  minTreeDistance: 5
   maxSlopeTree: 2.2
-  treesPerChunk: 3
+  treesPerChunk: 4
+  maxSlopeRock: 3.2
+  minRockDistance: 5
+  rocksPerChunk: 6
   terrainGradient:
     serializedVersion: 2
     key0: {r: 0.24951048, g: 0.5943396, b: 0.5943396, a: 1}
@@ -75,5 +78,8 @@ MonoBehaviour:
     type: 3}
   treePrefab: {fileID: 5358406638248718189, guid: 0170c09ceea46b24599abaeea39b4fed,
     type: 3}
-  bushPrefab: {fileID: 0}
+  bushPrefab: {fileID: 3691228832019814429, guid: bb56990ccfcb44747a7a67863189149c,
+    type: 3}
+  rockPrefab: {fileID: 2121303774142783685, guid: 272d79e4164e5714a88f8346a2aed268,
+    type: 3}
   seed: 7119480

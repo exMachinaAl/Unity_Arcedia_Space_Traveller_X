@@ -155,8 +155,8 @@ public class Game_SaveSystem : MonoBehaviour
 
         save.playerId = Guid.NewGuid().ToString();
         save.playerName = "none";
-        save.universeSeed = 217542405; // set custom seedUniverse
-        // save.universeSeed = rng.NextInt(1, int.MaxValue);
+        // save.universeSeed = 217542405; // set custom seedUniverse
+        save.universeSeed = rng.NextInt(1, int.MaxValue);
         save.galaxySeed = SeedUtil.SubSeed((long)save.universeSeed, 0);
         save.playerMode = PlayerMode.Human; // ini debug fast space loh ya, kalo new game
         // save.playerInThe = PlayerInThe.Space;

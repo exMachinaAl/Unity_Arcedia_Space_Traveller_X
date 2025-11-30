@@ -1,35 +1,35 @@
 {
-    "playerId": "d12faf62-ab7a-44c1-bdfd-4bee952f4cad",
+    "playerId": "504c9297-2a0e-43a6-ad11-c87b2655c063",
     "playerName": "Mod",
-    "universeSeed": 217542405,
-    "galaxySeed": 16066832095123665,
+    "universeSeed": 1124832696,
+    "galaxySeed": 83075748205216728,
     "playerMode": 0,
     "playerInThe": 0,
     "scienceCredit": 1000,
     "planetsInterrupted": [],
-    "lastWorld": -7613203,
+    "lastWorld": 7119480,
     "worldSession": {
-        "planetId": 1,
-        "planetSeed": -8707340749772458126,
-        "surfaceAtmosRadius": 430.0,
-        "planetVisualRadius": 380.0,
-        "AtmosphereRadius": 530.0,
-        "atmosphereHeight": 200.0,
+        "planetId": 0,
+        "planetSeed": 0,
+        "surfaceAtmosRadius": 0.0,
+        "planetVisualRadius": 0.0,
+        "AtmosphereRadius": 0.0,
+        "atmosphereHeight": 0.0,
         "planetCenter": {
-            "x": 1057.0,
-            "y": -167.0,
-            "z": -105.0
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
         },
         "entryNormal": {
-            "x": -0.8440952301025391,
-            "y": 0.5223677158355713,
-            "z": 0.12097553163766861
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
         },
         "entryPosition": {
-            "x": 739.0446166992188,
-            "y": 110.72492980957031,
-            "z": -50.63853073120117
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
         }
     },
-    "checksum": "93312D58CAB95BF38908008464A088A4B57018A29FEC35EB4D19C0712458EB80"
+    "checksum": "A22DA2ABFBCFED0662EEBBF13C4B0034ED7F4FC868E159F495E0A09BFED7741E"
 }
