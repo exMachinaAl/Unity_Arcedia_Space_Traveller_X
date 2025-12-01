@@ -35,6 +35,11 @@ public class Game_ResourceNode : MonoBehaviour
         nodeProperties.id = id;
         // resourceId = id;
     }
+    void Start()
+    {
+        if (nodeProperties == null)
+            nodeProperties = Instantiate(nodeTemplateProp);
+    }
     // void Start()
     // {
         // safety: generate id kalau kosong (untuk prototyping)

@@ -47,6 +47,7 @@ public class ItemData
     public float healValue;   // Untuk Consumable
 
     public bool isPlaceable;
+    public Sprite icon;
     public GameObject placePrefab;
 
     public ItemRarity rarity;
@@ -97,6 +98,9 @@ public class Game_PlayerInventory : MonoBehaviour
 
         // Pastikan selectedIndex berada dalam rentang indeks yang valid
         selectedIndex = Mathf.Clamp(selectedIndex, 0, items.Count - 1);
+
+        if (items.Count > 0)
+            Manager_UI.Instance.OnChangeOrUpdateInventory(this, selectedIndex);
     }
 
 
@@ -172,6 +176,18 @@ public class Game_PlayerInventory : MonoBehaviour
             return null;
 
         return items[selectedIndex];
+    }
+
+    public ItemStack GetItemAtIndex(int index)
+    {
+        if (index < 0 || index >= items.Count)
+            return null;
+
+        return items[index];
+    }
+    public int GetItemCount()
+    {
+        return items.Count;
     }
 
 } 
