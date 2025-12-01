@@ -152,6 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac2635883b6ee7742b9e310a77061a47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nodeTemplateProp: {fileID: 11400000, guid: 583365f75b574b449a84fd69192ab059, type: 2}
+  nodeProperties: {fileID: 0}
   resourceId: 0
   itemDropId: orion_tree
   dropAmount: 100

@@ -67,7 +67,7 @@ public class Root_GameStartManager : MonoBehaviour
         Game_SaveSystem.Instance.setNewGame(); 
         var loadData = Game_SaveSystem.Instance.getFullSaveData();
 
-        Game_SeedManager.Instance.Init(loadData.universeSeed, loadData.galaxySeed, loadData.lastWorld);
+        Game_SeedManager.Instance.Init(loadData.universeSeed, loadData.galaxySeed, loadData.lastWorldSeed);
         SceneManager.LoadScene("Template_UnderWorld");
         Debug.Log("New Game created");
         return true;
@@ -77,7 +77,7 @@ public class Root_GameStartManager : MonoBehaviour
         var loadData = Game_SaveSystem.Instance.getFullSaveData();
 
         // set load to game
-        Game_SeedManager.Instance.Init(loadData.universeSeed, loadData.galaxySeed, loadData.lastWorld);
+        Game_SeedManager.Instance.Init(loadData.universeSeed, loadData.galaxySeed, loadData.lastWorldSeed);
 
         // if (loadData.playerInThe != PlayerInThe.Space) {
         if (loadData.playerInThe == PlayerInThe.Space) {

@@ -128,7 +128,7 @@ public class Manager_Quest : MonoBehaviour
         }
     }
 
-    public void CollectItem(string itemName, int collected)
+    public void CollectItem(string itemName, int collected) // ubah menjadi (Update) prograss di unity behaviour
     {
         if (currentQst == null) return;
         if (itemName != currentStepQst.objective.idItem) return;

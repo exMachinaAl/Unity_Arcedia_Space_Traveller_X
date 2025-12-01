@@ -62,6 +62,8 @@ public class Manager_UI : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
             OnShowQuestMenu();
+
+        // ui untuk gonta ganti main hand inventory
     }
 
     public void OnShowQuestMenu()

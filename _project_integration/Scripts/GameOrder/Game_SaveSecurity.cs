@@ -84,7 +84,9 @@ public static class SaveSecurity
         sb.Append("|");
         sb.Append(data.scienceCredit);
         sb.Append("|");
-        sb.Append(data.lastWorld);
+        sb.Append(data.lastWorldId);
+        sb.Append("|");
+        sb.Append(data.lastWorldSeed);
         sb.Append("|");
 
         if (data.worldSession != null)

@@ -31,12 +31,12 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
         // heightMap = new float[settings.vertexPerLine, settings.vertexPerLine];
 
         //settings re Set
-        settings.seed = (int)Game_SaveSystem.Instance.getFullSaveData().lastWorld;
+        settings.seed = (int)Game_SaveSystem.Instance.getFullSaveData().lastWorldSeed;
 
         player = Manager_Player.Instance.GetCurrentModePlayerTransform();
 
         // if (Manager)
-        // Manager_Landing.Instance.surfaceRootPosition = transform;
+        Manager_Landing.Instance.surfaceRootPosition = transform;
     }
     void Update()
     {
@@ -94,7 +94,7 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
             // SpawnTrees(c, c.coord);
             // SpawnGrassV2(c, c.coord);
             SpawnGrassV3(c, c.coord);
-            SpawnBushesV1(c, c.coord);
+            // SpawnBushesV1(c, c.coord);
             SpawnTreesV2(c, c.coord);
             SpawnRocks(c, c.coord);
         }
@@ -246,6 +246,12 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
         int seed = settings.seed;
         int attempts = settings.treesPerChunk * 4; // buffer retry
 
+        long surfaceSeed = Game_SaveSystem.Instance.GetCurrentPlanetSeed();
+        long planetId = Game_SaveSystem.Instance.GetCurrentPlanetId();
+        // int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ (int)planetId;
+
+        Unity.Mathematics.Random prng = SeedUtil.GetRNG((int)surfaceSeed, coord.x, coord.y, (int)planetId); // cacad karena seed nya adalah planetseed, seharusnya
+
         List<Vector3> usedPositions = new List<Vector3>();
 
         for (int i = 0; i < attempts; i++)
@@ -253,8 +259,12 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
             if (usedPositions.Count >= settings.treesPerChunk)
                 break;
 
-            int x = Random.Range(1, settings.vertexPerLine - 2);
-            int z = Random.Range(1, settings.vertexPerLine - 2);
+            // int x = Random.Range(1, settings.vertexPerLine - 2);
+            // int z = Random.Range(1, settings.vertexPerLine - 2);
+            int x = prng.NextInt(1, settings.vertexPerLine - 2);
+            int z = prng.NextInt(1, settings.vertexPerLine - 2);
+
+            long resourceId = SeedUtil.MakeResourcesId((int)planetId, (x), (z), i);
 
             float h = chunk.heightMap[x, z];
 
@@ -293,28 +303,36 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
             if (tooClose)
                 continue;
 
+            if (prng.NextDouble() < 0.8f) // chance kemunculan pohon
+                continue;
+
+            if (Game_SaveSystem.Instance.IsNodeDepleted(planetId, resourceId))
+                continue;
+
             // 5. SPAWN
             GameObject tree = Instantiate(
                 settings.treePrefab,
                 pos,
-                Quaternion.Euler(0, Random.Range(0, 360f), 0),
+                // Quaternion.Euler(0, Random.Range(0, 360f), 0),
+                Quaternion.Euler(0, prng.NextFloat(0, 360f), 0),
                 chunk.chunkObject.transform
             );
 
             usedPositions.Add(pos);
             chunk.spawnedObjects.Add(tree);
+            tree.GetComponent<Game_ResourceNode>().Init(resourceId);
         }
 
         Debug.Log($"[TREE] Chunk {coord} : {usedPositions.Count}");
     }
 
-    // void SpawnTrees(Chunk chunk, Vector2Ihnt coord)
+    // void SpawnTrees(Chunk chunk, Vector2Int coord)
     // {
     //     // PRNG berdasarkan chunk + seed → konsisten
     //     // int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ settings.seed;
     //     // Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
 
-    //     long planetId = Game_SaveSystem.Instance.getCurrentPlanetId();
+    //     long planetId = Game_SaveSystem.Instance.GetCurrentPlanetId();
     //     int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ (int)planetId;
     //     Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
 
@@ -333,7 +351,7 @@ public class Game_SurfaceWorldGeneration : MonoBehaviour
     //         float worldX = coord.x * size + x;
     //         float worldZ = coord.y * size + z;
 
-    //         long resourceId = SeedUtil.makeResourcesId((int)planetId, new Vector2Int(Mathf.RoundToInt(x), Mathf.RoundToInt(z)), i);
+    //         long resourceId = SeedUtil.MakeResourcesId((int)planetId, new Vector2Int(Mathf.RoundToInt(x), Mathf.RoundToInt(z)), i);
 
 
     //         // float noise = Mathf.PerlinNoise(

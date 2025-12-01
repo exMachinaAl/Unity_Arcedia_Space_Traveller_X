@@ -61,7 +61,8 @@ public class PlayerSave
     public PlayerInThe playerInThe;
     public int scienceCredit;
     public List<PlanetInvatedData> planetsInterrupted = new List<PlanetInvatedData>();
-    public long lastWorld;
+    public long lastWorldId;
+    public long lastWorldSeed;
     public WorldSession worldSession;
     public string checksum;
 }
@@ -132,15 +133,13 @@ public class Game_SaveSystem : MonoBehaviour
     {
         return save.playerInThe;
     }
-    public void setCurrentPlanetId(long planetId)
+    public void SetCurrentPlanetId(long planetId)
     {
-        save.lastWorld = planetId;
+        save.lastWorldId = planetId;
         Save();
     }
-    public long getCurrentPlanetId() 
-    {
-        return save.lastWorld; 
-    }
+    public long GetCurrentPlanetId() => save.lastWorldId; 
+    public long GetCurrentPlanetSeed() => save.lastWorldSeed;
 
     public bool setNameByCutscene(string name)
     { 
@@ -155,8 +154,8 @@ public class Game_SaveSystem : MonoBehaviour
 
         save.playerId = Guid.NewGuid().ToString();
         save.playerName = "none";
-        // save.universeSeed = 217542405; // set custom seedUniverse
-        save.universeSeed = rng.NextInt(1, int.MaxValue);
+        save.universeSeed = 1361640601; // set custom seedUniverse
+        // save.universeSeed = rng.NextInt(1, int.MaxValue);
         save.galaxySeed = SeedUtil.SubSeed((long)save.universeSeed, 0);
         save.playerMode = PlayerMode.Human; // ini debug fast space loh ya, kalo new game
         // save.playerInThe = PlayerInThe.Space;
@@ -164,7 +163,8 @@ public class Game_SaveSystem : MonoBehaviour
         save.playerInThe = PlayerInThe.Ground;
         save.scienceCredit = 0;
         // save.lastWorld = SeedUtil.SubSeed(save.galaxySeed, 0);
-        save.lastWorld = SeedUtil.SurfaceSeedV3(save.galaxySeed, 0);
+        save.lastWorldId = SeedUtil.MakePlanetId((int)save.galaxySeed, 0, 0, 0); //broken, karena seharusnya dibuat murni statik
+        save.lastWorldSeed = SeedUtil.SurfaceSeedV3(save.galaxySeed, 0);
         // save.world
 
         if (Root_GameStartManager.isDebugMode)
@@ -230,7 +230,7 @@ public class Game_SaveSystem : MonoBehaviour
         data.checksum = fileChecksum;
         save = data;
 
-        Debug.Log("✅ Save Data OK. Last world: " + save.lastWorld);
+        Debug.Log("✅ Save Data OK. Last world: " + save.lastWorldId + " Seed: " + save.lastWorldSeed);
     }
 
 }

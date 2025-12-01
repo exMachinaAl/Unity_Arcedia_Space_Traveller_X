@@ -35,7 +35,7 @@ public class Root_GameInitManager : MonoBehaviour
 
     void PlayerSpawn()
     {
-        GameObject player = Instantiate(PlayerPrefab, new Vector3(0, 9, 0), Quaternion.identity);
+        GameObject player = Instantiate(PlayerPrefab, new Vector3(0, 30, 0), Quaternion.identity);
         Manager_Player.Instance.RegisterPlayer(player);
         DontDestroyOnLoad(player);
     }

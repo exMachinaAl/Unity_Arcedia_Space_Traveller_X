@@ -24,6 +24,26 @@ public static class SeedUtil
         }
     }
 
+    public static int ReverseSubSeed(int parentSeed, int resultingSeed)
+    {
+        // Coba semua nilai index dalam rentang yang mungkin
+        for (int index = 0; index < int.MaxValue; index++)
+        {
+            // Hitung seed dengan index yang saat ini
+            int subSeed = SubSeed(parentSeed, index);
+
+            // Jika cocok dengan resultingSeed, kembalikan index
+            if (subSeed == resultingSeed)
+            {
+                return index;
+            }
+        }
+
+        // Jika tidak ditemukan, kembalikan nilai tidak valid
+        return -1;
+    }
+
+
     public static long SurfaceSeedV3(long parentSeed, int index)
     {
         unchecked
@@ -83,17 +103,39 @@ public static class SeedUtil
     //     }
     // }
 
-    public static long makeResourcesId(int planetSeed, Vector2Int chunk, int nodeIndex)
+    public static long MakePlanetId(int galaxySeed, int chunkX, int chunkY, int nodeIndex)
     {
         unchecked
         {
-            long hash = planetSeed;
-            hash = hash * 31 + chunk.x;
-            hash = hash * 31 + chunk.y;
+            long hash = galaxySeed;
+            hash = hash * 31 + chunkX;
+            hash = hash * 31 + chunkY;
             hash = hash * 31 + nodeIndex;
             return hash;
         }
     }
+    public static long MakeResourcesId(int planetSeed, int chunkX, int chunkY, int nodeIndex)
+    {
+        unchecked
+        {
+            long hash = planetSeed;
+            hash = hash * 31 + chunkX;
+            hash = hash * 31 + chunkY;
+            hash = hash * 31 + nodeIndex;
+            return hash;
+        }
+    }
+    // public static long makeResourcesId(int planetSeed, Vector2Int chunk, int nodeIndex)
+    // {
+    //     unchecked
+    //     {
+    //         long hash = planetSeed;
+    //         hash = hash * 31 + chunk.x;
+    //         hash = hash * 31 + chunk.y;
+    //         hash = hash * 31 + nodeIndex;
+    //         return hash;
+    //     }
+    // }
     public static Unity.Mathematics.Random GetRNG(int seed, int chunkX, int chunkZ, int planetIndex)
     {
         int finalSeed = seed;

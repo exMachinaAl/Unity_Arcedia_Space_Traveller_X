@@ -59,7 +59,7 @@ public class Game_WorldGenerator : MonoBehaviour
                     z
             );
 
-            long resourceId = SeedUtil.makeResourcesId(resId, gridPos, i);
+            long resourceId = SeedUtil.MakeResourcesId(resId, gridPos.x, gridPos.y, i);
 
             ResourceData resource = new ResourceData
             {

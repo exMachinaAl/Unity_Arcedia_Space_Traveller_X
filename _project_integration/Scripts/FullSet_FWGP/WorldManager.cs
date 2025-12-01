@@ -112,7 +112,8 @@ void SpawnTrees(Chunk chunk, Vector2Int coord)
         // int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ settings.seed;
         // Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
 
-        long planetId = Game_SaveSystem.Instance.getCurrentPlanetId();
+        // long planetId = Game_SaveSystem.Instance.getCurrentPlanetId();
+        long planetId = 1234;
         int hash = coord.x * 73856093 ^ coord.y * 19349663 ^ (int)planetId;
     Unity.Mathematics.Random prng = new Unity.Mathematics.Random((uint)hash);
 
@@ -131,7 +132,7 @@ void SpawnTrees(Chunk chunk, Vector2Int coord)
             float worldX = coord.x * size + x;
             float worldZ = coord.y * size + z;
 
-            long resourceId = SeedUtil.makeResourcesId((int)planetId, new Vector2Int(Mathf.RoundToInt(x), Mathf.RoundToInt(z)), i);
+            long resourceId = SeedUtil.MakeResourcesId((int)planetId, Mathf.RoundToInt(x), Mathf.RoundToInt(z), i);
 
 
             // float noise = Mathf.PerlinNoise(

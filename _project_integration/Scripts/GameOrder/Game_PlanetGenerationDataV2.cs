@@ -7,7 +7,7 @@ using System.Linq;
 [System.Serializable]
 public class PlanetInformation
 {
-    public int planetId;
+    public long planetId;
     public string planetName;
     public long planetSeed;
     public Vector3 position;
@@ -30,7 +30,7 @@ public class Game_PlanetGenerationDataV2 : MonoBehaviour
     
 
     public Dictionary<Vector2Int, List<PlanetInformation>> generatedChunks = new();
-    public Dictionary<int, GameObject> spawnedPlanets = new();
+    public Dictionary<long, GameObject> spawnedPlanets = new();
 
     void Start()
     {
@@ -65,7 +65,7 @@ public class Game_PlanetGenerationDataV2 : MonoBehaviour
         int cx = Mathf.FloorToInt(p.x / chunkSize);
         int cz = Mathf.FloorToInt(p.z / chunkSize);
 
-        var keepPlanetIDs = new HashSet<int>();
+        var keepPlanetIDs = new HashSet<long>();
         var keepChunks = new HashSet<Vector2Int>();
 
         for (int x = cx - viewRange; x <= cx + viewRange; x++)
@@ -208,7 +208,8 @@ public class Game_PlanetGenerationDataV2 : MonoBehaviour
 
             planets.Add(new PlanetInformation
             {
-                planetId = i + chunkX * 100 + chunkZ * 1000,
+                // planetId = i + chunkX * 100 + chunkZ * 1000,
+                planetId = SeedUtil.MakePlanetId((int)galaxySeed, chunkX, chunkZ, i),
                 planetName = "Planet_" + i,
                 planetSeed = SeedUtil.SubSeed(galaxySeed, i),
                 position = pos,
