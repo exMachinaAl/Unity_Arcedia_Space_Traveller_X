@@ -18,7 +18,7 @@ MonoBehaviour:
   questStep:
   - subTitleQuest: cari 250 kayu
     objective:
-      idItem: orion_tree
+      idItem: 1
       valueItem: 250
     npcTalkBefore:
     - npcName: DeltaBe
@@ -44,7 +44,7 @@ MonoBehaviour:
     isDone: 0
   - subTitleQuest: cari 500 kayu
     objective:
-      idItem: orion_tree
+      idItem: 1
       valueItem: 500
     npcTalkBefore:
     - npcName: DeltaBe

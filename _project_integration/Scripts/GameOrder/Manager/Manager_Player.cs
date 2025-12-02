@@ -175,6 +175,7 @@ public class Manager_Player : MonoBehaviour
         if (npc != null)
         {
             nearbyNPCs.Add(npc);
+            Manager_UI.Instance.UIMenuInteract.SetShowMenuInteractNpc(true);
             Manager_UI.Instance.UIMenuInteract.UpdateInteractableNPCs(nearbyNPCs);
         }
     }
@@ -185,6 +186,7 @@ public class Manager_Player : MonoBehaviour
         if (npc != null)
         {
             nearbyNPCs.Remove(npc);
+            Manager_UI.Instance.UIMenuInteract.SetShowMenuInteractNpc(false);
             Manager_UI.Instance.UIMenuInteract.UpdateInteractableNPCs(nearbyNPCs);
         }
     }

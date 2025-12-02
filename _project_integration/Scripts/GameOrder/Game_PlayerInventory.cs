@@ -128,6 +128,9 @@ public class Game_PlayerInventory : MonoBehaviour
         // Jika masih sisa → buat stack baru
         ItemStack newStack = new ItemStack(newItem, amount);
         items.Add(newStack);
+
+        //QuestManager + ui
+        Manager_Quest.Instance.CheckInventoryItemQuest();
     }
 
     // =========================
@@ -151,6 +154,7 @@ public class Game_PlayerInventory : MonoBehaviour
             }
         }
 
+        Manager_Quest.Instance.CheckInventoryItemQuest();
         return false;
     }
 

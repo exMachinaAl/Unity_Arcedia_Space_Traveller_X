@@ -11,6 +11,10 @@ public class UI_MenuInteractNpc : MonoBehaviour
     private List<GameObject> buttons = new List<GameObject>();
 
 
+    public void SetShowMenuInteractNpc(bool show)
+    {
+        interactionMenu.SetActive(show);
+    }
     // Memperbarui UI dengan daftar NPC yang bisa berinteraksi
     public void UpdateInteractableNPCs(List<Mono_NpcInteractor> npcList)
     {

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 [System.Serializable]
 public class OCQuestCategory {
@@ -39,6 +40,11 @@ public class Manager_Quest : MonoBehaviour
     {
         mainStepQst = 0;
         numStepQst = 0;
+    }
+
+    void Update()
+    {
+        // CheckInventoryItemQuest();
     }
 
     public void StartStoryQuest()
@@ -96,7 +102,7 @@ public class Manager_Quest : MonoBehaviour
         Manager_UI.Instance.SetCurrentQuest(currentQst.questTitle, currentStepQst.subTitleQuest);
         // Manager_UI.Instance.SetCurrentQuest(currentQst.questTitle, currentQst.questDescription);
         StartCoroutine(YappingPerSec(5f));
-        
+
         // mainStepQst++;
     }
 
@@ -128,6 +134,50 @@ public class Manager_Quest : MonoBehaviour
         }
     }
 
+    public void CheckInventoryItemQuest()
+    {
+        if (currentQst == null) return;
+        if (objectiveDone) return;
+
+        Game_PlayerInventory playerInv = Manager_Player.Instance.player.transform.GetComponent<Game_PlayerInventory>();
+        int totalItem = 0;
+
+        // for (int i = 0; i < playerInv.items.Count; i++)
+        // {
+        //     ItemStack stack = playerInv.items[i];
+        //     if (stack.item.id == currentStepQst.objective.idItem)
+        //     {
+        //         totalItem += stack.amount;
+        //         Manager_UI.Instance.UpdateProgress(totalItem, currentStepQst.objective.valueItem);
+        //     }
+        // }
+        // if (playerInv.HasItem(currentStepQst.objective.idItem, currentStepQst.objective.valueItem))
+        // {
+        //     Manager_UI.Instance.UpdateProgress(totalItem, currentStepQst.objective.valueItem);
+        // }
+
+        StartCoroutine(UIUpdateProgressMiniQuest(playerInv, totalItem, (totalItem) =>
+        {
+            if (totalItem >= currentStepQst.objective.valueItem)
+            {
+                OnObjectiveComplete();
+            }
+        }));
+    }
+    IEnumerator UIUpdateProgressMiniQuest(Game_PlayerInventory playerInv, int totalItem, Action<int> onComplete)
+    {
+        for (int i = 0; i < playerInv.items.Count; i++)
+        {
+            ItemStack stack = playerInv.items[i];
+            if (stack.item.id == currentStepQst.objective.idItem)
+            {
+                totalItem += stack.amount;
+                Manager_UI.Instance.UpdateProgress(totalItem, currentStepQst.objective.valueItem);
+            }
+            yield return null;
+        }
+        onComplete(totalItem);
+    }
     public void CollectItem(string itemName, int collected) // ubah menjadi (Update) prograss di unity behaviour
     {
         if (currentQst == null) return;
@@ -166,6 +216,10 @@ public class Manager_Quest : MonoBehaviour
         if (currentStepQst.completionMode == QuestCompletionMode.ReturnToNPC &&
             npcSc.npcName == currentStepQst.npcTalkBefore[0].npcName)
         {
+            //#remove item jiks quest adalah return to NPC
+            Game_PlayerInventory playerInv = Manager_Player.Instance.player.transform.GetComponent<Game_PlayerInventory>();
+            playerInv.RemoveItem(currentStepQst.objective.idItem, currentStepQst.objective.valueItem);
+
             StartCoroutine(AfYappingPerSec(5f));
             CompleteQuest();
         }
