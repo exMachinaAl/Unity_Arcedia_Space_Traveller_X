@@ -34,7 +34,8 @@ public class Game_PlanetGenerationDataV2 : MonoBehaviour
 
     void Start()
     {
-        // lot
+        player = Manager_Player.Instance.GetCurrentModePlayerTransform();
+        galaxySeed = Game_SeedManager.Instance.currentGalaxySeed;
     }
 
     void Update()
@@ -42,10 +43,11 @@ public class Game_PlanetGenerationDataV2 : MonoBehaviour
         try
         {
             if (player == null && Manager_Player.Instance != null)
-                player = Manager_Player.Instance.flightCtrl.shipTransform;
+                player = Manager_Player.Instance.GetCurrentModePlayerTransform();
+                // player = Manager_Player.Instance.flightCtrl.shipTransform;
 
-            if (galaxySeed == 0 && Game_SeedManager.Instance != null)
-                galaxySeed = Game_SeedManager.Instance.currentGalaxySeed;
+                if (galaxySeed == 0 && Game_SeedManager.Instance != null)
+                    galaxySeed = Game_SeedManager.Instance.currentGalaxySeed;
 
             if (galaxySeed == 0 || player == null)
                 return;
@@ -232,5 +234,24 @@ public class Game_PlanetGenerationDataV2 : MonoBehaviour
         obj.GetComponent<Game_PlanetFullInformation>().Init(pd);
 
         spawnedPlanets[pd.planetId] = obj;
+    }
+
+    private GameObject FindNearestPlanet(Transform transform)
+    {
+        GameObject[] planets = GameObject.FindGameObjectsWithTag("Planet");
+        GameObject nearestPlanet = null;
+        float minDistance = Mathf.Infinity;
+
+        foreach (GameObject planet in planets)
+        {
+            float distance = Vector3.Distance(transform.position, planet.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestPlanet = planet;
+            }
+        }
+
+        return nearestPlanet;
     }
 }

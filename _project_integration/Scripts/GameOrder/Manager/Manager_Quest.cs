@@ -47,6 +47,11 @@ public class Manager_Quest : MonoBehaviour
         // CheckInventoryItemQuest();
     }
 
+    public void StartStoryQuestV2(int mainStep, int stepNum)
+    {
+
+    }
+
     public void StartStoryQuest()
     {
         // currentQst = quests.mainQuest[mainStepQst];
@@ -166,9 +171,9 @@ public class Manager_Quest : MonoBehaviour
     }
     IEnumerator UIUpdateProgressMiniQuest(Game_PlayerInventory playerInv, int totalItem, Action<int> onComplete)
     {
-        for (int i = 0; i < playerInv.items.Count; i++)
+        for (int i = 0; i < playerInv.inventory.items.Count; i++)
         {
-            ItemStack stack = playerInv.items[i];
+            ItemStack stack = playerInv.inventory.items[i];
             if (stack.item.id == currentStepQst.objective.idItem)
             {
                 totalItem += stack.amount;

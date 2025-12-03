@@ -55,6 +55,9 @@ public class PlayerSave
 {
     public string playerId;
     public string playerName;
+    public Inventory playerInventory;
+    public Vector3 playerPosition;
+    public List<Inventory> remotePlayerInventory = new List<Inventory>();
     public int universeSeed;
     public long galaxySeed;
     public PlayerMode playerMode;
@@ -80,6 +83,10 @@ public class Game_SaveSystem : MonoBehaviour
         if (Game_SaveSystem.Instance == null && Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); Load(); }
         else Destroy(gameObject);
     }
+    private void OnApplicationQuit()
+    {
+        SetPlayerPosition();
+    }
 
     public void MarkNodeDepleted(long planetId, long objekResourceId)
     {
@@ -101,6 +108,33 @@ public class Game_SaveSystem : MonoBehaviour
         if (planetData == null) return false;
         return planetData.depletedNodes.Contains(nodeId);
     }
+        // Fungsi untuk menyimpan data ke penyimpanan (misalnya file)
+    public void SaveInventory(Game_PlayerInventory playerInventory)
+    {
+        // Menyinkronkan data dari PlayerInventory ke SaveManager
+        save.playerInventory.items.Clear(); // Bersihkan stack lama
+        save.playerInventory.items.AddRange(playerInventory.inventory.items); // Salin data
+
+        Save();
+        Debug.Log("Inventory saved!");
+    }
+
+    // Fungsi untuk memuat data dari penyimpanan
+    public void LoadInventory(Game_PlayerInventory playerInventory)
+    {
+        // Menyinkronkan data dari SaveManager ke PlayerInventory
+        playerInventory.inventory.items.Clear();
+
+        if (save.playerInventory == null)
+        {
+            Debug.Log("No inventory data found in save.");
+            return;
+        }
+
+        playerInventory.inventory.items.AddRange(save.playerInventory.items);
+        
+        Debug.Log("Inventory loaded!");
+    }
     public void SetWorldSession(long planetId, long planetSeed, float surfaceRds, float planetVisRds, float AtmosphereRadius, float atmosphereHeight, Vector3 planetCenter, Vector3 entryNrl, Vector3 entryPos)
     {
         save.worldSession.planetId = planetId;
@@ -114,6 +148,29 @@ public class Game_SaveSystem : MonoBehaviour
         save.worldSession.entryPosition = entryPos;
         Save();
         
+    }
+    public void SetPlayerPosition()
+    {
+        if (Manager_Player.Instance == null)
+        {
+            save.playerPosition = new Vector3(0, 0, 0);
+            Logger.LogWarning("Save manager", "Manager_Player Instance is null, setting player position to (0,0,0)");
+            Save();
+            return;
+        }
+
+        // var currPlayerMode = GetPlayerMode();
+        if (Manager_Player.Instance.flightCtrl != null && Manager_Player.Instance.flightCtrl.shipTransform != null && GetPlayerMode() == PlayerMode.Flight)
+            save.playerPosition = Manager_Player.Instance.flightCtrl.shipTransform.position;
+
+        if (Manager_Player.Instance.humanCtrl != null && Manager_Player.Instance.humanCtrl.transform != null && GetPlayerMode() == PlayerMode.Human)
+            save.playerPosition = Manager_Player.Instance.humanCtrl.transform.position;
+
+        Save();
+    }
+    public Vector3 GetPlayerPosition()
+    {
+        return save.playerPosition;
     }
     public void SetPlayerMode(PlayerMode SetMode)
     {
@@ -154,18 +211,31 @@ public class Game_SaveSystem : MonoBehaviour
 
         save.playerId = Guid.NewGuid().ToString();
         save.playerName = "none";
+        save.playerPosition = new Vector3(0, 7, 0);
         save.universeSeed = 1361640601; // set custom seedUniverse
         // save.universeSeed = rng.NextInt(1, int.MaxValue);
         save.galaxySeed = SeedUtil.SubSeed((long)save.universeSeed, 0);
         save.playerMode = PlayerMode.Human; // ini debug fast space loh ya, kalo new game
-        // save.playerInThe = PlayerInThe.Space;
         // save.playerMode = PlayerMode.Human;
-        save.playerInThe = PlayerInThe.Ground;
+        save.playerInThe = PlayerInThe.Space;
+        // save.playerInThe = PlayerInThe.Ground;
         save.scienceCredit = 0;
         // save.lastWorld = SeedUtil.SubSeed(save.galaxySeed, 0);
         save.lastWorldId = SeedUtil.MakePlanetId((int)save.galaxySeed, 0, 0, 0); //broken, karena seharusnya dibuat murni statik
         save.lastWorldSeed = SeedUtil.SurfaceSeedV3(save.galaxySeed, 0);
         // save.world
+
+        // Game_SaveSystem.Instance.SetWorldSession( // semenstara debug
+        //     loadPlanetData.planetId,
+        //     loadPlanetData.planetSeed,
+        //     loadPlanetData.surfaceAtmosRadius,
+        //     loadPlanetData.planetVisualRadius,
+        //     loadPlanetData.AtmosphereRadius,
+        //     loadPlanetData.atmosphereHeight,
+        //     loadPlanetData.planetCenter,
+        //     loadPlanetData.entryNormal,
+        //     player.position
+        // );
 
         if (Root_GameStartManager.isDebugMode)
         {
@@ -176,7 +246,7 @@ public class Game_SaveSystem : MonoBehaviour
         Save();
         return true;
     }
-    public PlayerSave getFullSaveData()
+    public PlayerSave getFullSaveData() 
     {
         return save;
     } 

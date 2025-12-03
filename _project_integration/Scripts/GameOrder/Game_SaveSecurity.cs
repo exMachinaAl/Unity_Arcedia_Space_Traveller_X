@@ -89,27 +89,23 @@ public static class SaveSecurity
         sb.Append(data.lastWorldSeed);
         sb.Append("|");
 
-        if (data.worldSession != null)
-        {
-            var ds = data.worldSession;
-            ds.ToChecksumString();
-        //     sb.Append(ds.planetId ?? "");
-            //     sb.Append("|");
-            //     sb.Append(ds.planetSeed ?? "");
-            //     sb.Append("|");
-            //     sb.Append(ds.planetRadius ?? "");
-            //     sb.Append("|");
-            //     sb.Append(ds.PlCenterToString());
-            //     sb.Append("|");
-            //     sb.Append(ds.PlEntryNormalToString());
-            //     sb.Append("|");
-            //     sb.Append(ds.PlEntryPositionToString());
-            //     sb.Append("|");
-        }
+        // if (data.playerPosition != null)
+        // {
+        //     Vector3 v = data.playerPosition;
+        //     sb.Append($"{v.x:F6}|{v.y:F6}|{v.z:F6}");
+        //     sb.Append("|");
+        // } else {
+        //     sb.Append("0,0,0|");
+        // }
 
-            // Sort planets for deterministic order
-            data.planetsInterrupted.Sort((a, b) => a.planetId.CompareTo(b.planetId));
+        sb.Append(data.worldSession != null ? data.worldSession.ToChecksumString() : "");
+        sb.Append("|");
 
+        sb.Append(data.playerInventory != null ? data.playerInventory.ToChecksumString() : "");
+        sb.Append("|");
+
+        // Sort planets for deterministic order
+        data.planetsInterrupted.Sort((a, b) => a.planetId.CompareTo(b.planetId));
         foreach (var p in data.planetsInterrupted)
         {
             p.depletedNodes.Sort();

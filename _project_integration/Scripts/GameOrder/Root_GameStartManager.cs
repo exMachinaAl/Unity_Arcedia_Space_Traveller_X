@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Playables;
 
 public class Root_GameStartManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class Root_GameStartManager : MonoBehaviour
     // Start is called before the first frame update
     public static bool isDebugMode = true;
     public int maxLoadPlanets = 5;
+
+    public bool isNewGame = true;
     void Awake()
     {
         if (Root_GameStartManager.Instance != null && Instance != null)
@@ -45,11 +48,13 @@ public class Root_GameStartManager : MonoBehaviour
             if (Game_SaveSystem.Instance.save.playerName == null || Game_SaveSystem.Instance.save.playerName == "")
             {
                 Debug.Log("No existing player data found. Starting new player.");
+                isNewGame = true;
                 return StartNewPlayer();
             }
             else
             {
                 Debug.Log("Existing player data found. Loading player.");
+                isNewGame = false;
                 return LoadExistingPlayer();
             }
         }
@@ -59,30 +64,36 @@ public class Root_GameStartManager : MonoBehaviour
             return false;
         }
 
-        
+
     }
 
     bool StartNewPlayer()
     {
-        Game_SaveSystem.Instance.setNewGame(); 
+        Game_SaveSystem.Instance.setNewGame();
         var loadData = Game_SaveSystem.Instance.getFullSaveData();
 
         Game_SeedManager.Instance.Init(loadData.universeSeed, loadData.galaxySeed, loadData.lastWorldSeed);
-        SceneManager.LoadScene("Template_UnderWorld");
+        SceneManager.LoadScene("Template_SpaceWorld");
+        // SceneManager.LoadScene("Template_UnderWorld");
         Debug.Log("New Game created");
+
+
         return true;
-     }
+    }
     bool LoadExistingPlayer()
-    { 
+    {
         var loadData = Game_SaveSystem.Instance.getFullSaveData();
 
         // set load to game
         Game_SeedManager.Instance.Init(loadData.universeSeed, loadData.galaxySeed, loadData.lastWorldSeed);
 
         // if (loadData.playerInThe != PlayerInThe.Space) {
-        if (loadData.playerInThe == PlayerInThe.Space) {
+        if (loadData.playerInThe == PlayerInThe.Space)
+        {
             SceneManager.LoadScene("Template_SpaceWorld");
-        } else {
+        }
+        else
+        {
             SceneManager.LoadScene("Template_UnderWorld");
         }
 
@@ -92,6 +103,10 @@ public class Root_GameStartManager : MonoBehaviour
         // int planetSeed = SeedUtil.SubSeed(galaxySeed, 0);
         // Game_SaveSystem.Instance.setCurrentPlanetId(planetSeed);
         return true;
+    }
+    public bool IsNewGame()
+    {
+        return isNewGame;
     }
 
 }

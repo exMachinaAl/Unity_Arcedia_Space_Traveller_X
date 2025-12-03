@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 
 public enum ItemToolType
@@ -74,34 +75,35 @@ public class ItemStack
     }
 }
 
-public class Game_PlayerInventory : MonoBehaviour
+[System.Serializable]
+public class Inventory
 {
     public List<ItemStack> items = new List<ItemStack>();
     public int selectedIndex = 0;
 
-    void Update()
-    {
-        // Detect tombol angka 1 dan 2
-        if (Input.GetKeyDown(KeyCode.Alpha1)) selectedIndex = 0;
-        if (Input.GetKeyDown(KeyCode.Alpha2)) selectedIndex = 1;
+    // void Update()
+    // {
+    //     // Detect tombol angka 1 dan 2
+    //     if (Input.GetKeyDown(KeyCode.Alpha1)) selectedIndex = 0;
+    //     if (Input.GetKeyDown(KeyCode.Alpha2)) selectedIndex = 1;
 
-        // Scroll mouse untuk memilih item
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll > 0f) // Scroll ke atas
-        {
-            selectedIndex--;
-        }
-        else if (scroll < 0f) // Scroll ke bawah
-        {
-            selectedIndex++;
-        }
+    //     // Scroll mouse untuk memilih item
+    //     float scroll = Input.GetAxis("Mouse ScrollWheel");
+    //     if (scroll > 0f) // Scroll ke atas
+    //     {
+    //         selectedIndex--;
+    //     }
+    //     else if (scroll < 0f) // Scroll ke bawah
+    //     {
+    //         selectedIndex++;
+    //     }
 
-        // Pastikan selectedIndex berada dalam rentang indeks yang valid
-        selectedIndex = Mathf.Clamp(selectedIndex, 0, items.Count - 1);
+    //     // Pastikan selectedIndex berada dalam rentang indeks yang valid
+    //     selectedIndex = Mathf.Clamp(selectedIndex, 0, items.Count - 1);
 
-        if (items.Count > 0)
-            Manager_UI.Instance.OnChangeOrUpdateInventory(this, selectedIndex);
-    }
+    //     if (items.Count > 0)
+    //         Manager_UI.Instance.OnChangeOrUpdateInventory(this, selectedIndex);
+    // }
 
 
 
@@ -129,8 +131,8 @@ public class Game_PlayerInventory : MonoBehaviour
         ItemStack newStack = new ItemStack(newItem, amount);
         items.Add(newStack);
 
-        //QuestManager + ui
-        Manager_Quest.Instance.CheckInventoryItemQuest();
+        // //QuestManager + ui
+        // Manager_Quest.Instance.CheckInventoryItemQuest();
     }
 
     // =========================
@@ -154,7 +156,7 @@ public class Game_PlayerInventory : MonoBehaviour
             }
         }
 
-        Manager_Quest.Instance.CheckInventoryItemQuest();
+        // Manager_Quest.Instance.CheckInventoryItemQuest();
         return false;
     }
 
@@ -194,4 +196,78 @@ public class Game_PlayerInventory : MonoBehaviour
         return items.Count;
     }
 
-} 
+    public string ToChecksumString()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        if (items == null || items.Count == 0)
+            return "";
+
+        foreach (var stack in items)
+        {
+            sb.Append($"{stack.item.id}:{stack.amount},");
+        }
+        return sb.ToString();
+    }
+
+}
+
+public class Game_PlayerInventory : MonoBehaviour
+{
+    public Inventory inventory = new Inventory();
+    public event Action OnInventoryChanged;
+
+    void Update()
+    {
+        // Detect tombol angka 1 dan 2
+        if (Input.GetKeyDown(KeyCode.Alpha1)) inventory.selectedIndex = 0;
+        if (Input.GetKeyDown(KeyCode.Alpha2)) inventory.selectedIndex = 1;
+
+        // Scroll mouse untuk memilih item
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll > 0f) // Scroll ke atas
+        {
+            inventory.selectedIndex--;
+        }
+        else if (scroll < 0f) // Scroll ke bawah
+        {
+            inventory.selectedIndex++;
+        }
+
+        // Pastikan selectedIndex berada dalam rentang indeks yang valid
+        inventory.selectedIndex = Mathf.Clamp(inventory.selectedIndex, 0, inventory.items.Count - 1);
+
+        if (inventory.items.Count > 0)
+            Manager_UI.Instance.OnChangeOrUpdateInventory(this, inventory.selectedIndex);
+    }
+
+    public void AddItem(ItemData newItem, int amount)
+    {
+        inventory.AddItem(newItem, amount);
+        
+        //QuestManager + ui
+        Manager_Quest.Instance.CheckInventoryItemQuest();
+        OnInventoryChanged?.Invoke();
+    }
+    public bool RemoveItem(string itemId, int amount)
+    {
+        bool result = inventory.RemoveItem(itemId, amount);
+        //QuestManager + ui
+        Manager_Quest.Instance.CheckInventoryItemQuest();
+        OnInventoryChanged?.Invoke();
+        return result;
+    }
+    
+    public int GetItemCount()
+    {
+        return inventory.GetItemCount();
+    }
+    public ItemStack GetItemAtIndex(int index)
+    {
+        return inventory.GetItemAtIndex(index);
+    }
+    public ItemStack GetMainHandItem()
+    {
+        return inventory.GetMainHandItem();
+    }
+}

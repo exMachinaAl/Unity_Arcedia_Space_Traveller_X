@@ -122,6 +122,123 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &236171454
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 236171455}
+  - component: {fileID: 236171456}
+  - component: {fileID: 236171458}
+  - component: {fileID: 236171457}
+  m_Layer: 0
+  m_Name: CMatic_PlayerAccidentShip_Space
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &236171455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236171454}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 387238916}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!320 &236171456
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236171454}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: cc22fa1ef88646948b718dd0bc1cded8, type: 2}
+  m_InitialState: 0
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: -3199196704014932299, guid: cc22fa1ef88646948b718dd0bc1cded8, type: 2}
+    value: {fileID: 236171457}
+  - key: {fileID: 7214894919404883962, guid: cc22fa1ef88646948b718dd0bc1cded8, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 2273848301700675837, guid: cc22fa1ef88646948b718dd0bc1cded8, type: 2}
+    value: {fileID: 236171457}
+  m_ExposedReferences:
+    m_References: []
+--- !u!114 &236171457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236171454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: ee9349733d4be784fb006a99cced7d41, type: 2}
+    - {fileID: 11400000, guid: 49c9d74ecbe84fa4dbda91a41a15fc99, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 236171458}
+          m_TargetAssemblyTypeName: PesawatMbeledos, Assembly-CSharp
+          m_MethodName: LookAtTarget
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 1
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 236171458}
+          m_TargetAssemblyTypeName: PesawatMbeledos, Assembly-CSharp
+          m_MethodName: PesawatJalanSendiri
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &236171458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236171454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdadc1331adc64645a0f937b92759ae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  victim: {fileID: 0}
+  lookAtTarget: {fileID: 8060841399849803316}
+  director: {fileID: 236171456}
 --- !u!1 &387238915
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,6 +270,7 @@ Transform:
   m_Children:
   - {fileID: 870335385}
   - {fileID: 1468772155}
+  - {fileID: 236171455}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &499623259
@@ -222,7 +340,7 @@ MonoBehaviour:
   galaxySeed: 0
   player: {fileID: 0}
   playerCam: {fileID: 0}
-  planetPrefab: {fileID: 8042667867824296847, guid: 72bf5ee3523c4c84aa4466aea2f35e03,
+  planetPrefab: {fileID: 8042667867824296847, guid: ee9f19f8df405d04db24c57e843ccb73,
     type: 3}
   generationRoot: {fileID: 1304420278}
 --- !u!1 &870335384
@@ -563,17 +681,17 @@ PrefabInstance:
     - target: {fileID: 5841007877418884963, guid: 2673605df7ff89b4ba4eef732f009e83,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5841007877418884963, guid: 2673605df7ff89b4ba4eef732f009e83,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.29
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5841007877418884963, guid: 2673605df7ff89b4ba4eef732f009e83,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 5841007877418884963, guid: 2673605df7ff89b4ba4eef732f009e83,
         type: 3}
@@ -615,12 +733,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2673605df7ff89b4ba4eef732f009e83, type: 3}
+--- !u!4 &8060841399849803316 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5841007877418884963, guid: 2673605df7ff89b4ba4eef732f009e83,
+    type: 3}
+  m_PrefabInstance: {fileID: 8060841399849803315}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 8060841399849803315}
+  - {fileID: 387238916}
   - {fileID: 499623261}
   - {fileID: 1304420278}
-  - {fileID: 387238916}
   - {fileID: 1540968165}
