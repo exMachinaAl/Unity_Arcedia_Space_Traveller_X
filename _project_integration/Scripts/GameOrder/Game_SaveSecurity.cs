@@ -98,11 +98,11 @@ public static class SaveSecurity
         //     sb.Append("0,0,0|");
         // }
 
-        sb.Append(data.worldSession != null ? data.worldSession.ToChecksumString() : "");
-        sb.Append("|");
+        // sb.Append(data.worldSession != null ? data.worldSession.ToChecksumString() : "");
+        // sb.Append("|");
 
-        sb.Append(data.playerInventory != null ? data.playerInventory.ToChecksumString() : "");
-        sb.Append("|");
+        // sb.Append(data.playerInventory != null ? data.playerInventory.ToChecksumString() : "");
+        // sb.Append("|");
 
         // Sort planets for deterministic order
         data.planetsInterrupted.Sort((a, b) => a.planetId.CompareTo(b.planetId));

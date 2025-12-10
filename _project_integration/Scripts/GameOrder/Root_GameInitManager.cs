@@ -36,22 +36,22 @@ public class Root_GameInitManager : MonoBehaviour
         // StartIfNewGame();
     }
 
-    private void OnEnable()
-    {
-        // Menambahkan event listener untuk sceneLoaded
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
+    // private void OnEnable()
+    // {
+    //     // Menambahkan event listener untuk sceneLoaded
+    //     SceneManager.sceneLoaded += OnSceneLoaded;
+    // }
 
-    private void OnDisable()
-    {
-        // Menghapus event listener jika sudah tidak diperlukan
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+    // private void OnDisable()
+    // {
+    //     // Menghapus event listener jika sudah tidak diperlukan
+    //     SceneManager.sceneLoaded -= OnSceneLoaded;
+    // }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        StartCoroutine(StartIfNewGameCoroutine());
-    }
+    // void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    // {
+    //     StartCoroutine(StartIfNewGameCoroutine());
+    // }
 
     void PlayerSpawn()
     {

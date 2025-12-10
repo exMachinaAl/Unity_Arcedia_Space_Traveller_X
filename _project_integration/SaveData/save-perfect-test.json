@@ -49,7 +49,7 @@
                     "rarity": 4
                 },
                 "amount": 1,
-                "currentDurability": 972
+                "currentDurability": 973
             },
             {
                 "item": {
@@ -336,7 +336,31 @@
                     },
                     "rarity": 0
                 },
-                "amount": 50,
+                "amount": 100,
+                "currentDurability": 0
+            },
+            {
+                "item": {
+                    "id": "1",
+                    "itemName": "orion_log",
+                    "description": "orion log σεσαθθ υανγ σανγατ βερενεργι σεβαγαι σεταρα ραδ νθκε",
+                    "itemType": 0,
+                    "toolType": 0,
+                    "maxStack": 64,
+                    "durability": 1,
+                    "efficiency": 1.0,
+                    "fuelValue": 0.0,
+                    "healValue": 0.0,
+                    "isPlaceable": false,
+                    "icon": {
+                        "instanceID": 0
+                    },
+                    "placePrefab": {
+                        "instanceID": 0
+                    },
+                    "rarity": 0
+                },
+                "amount": 100,
                 "currentDurability": 0
             }
         ],
@@ -350,8 +374,8 @@
     "remotePlayerInventory": [],
     "universeSeed": 1361640601,
     "galaxySeed": 100565454860031893,
-    "playerMode": 1,
-    "playerInThe": 1,
+    "playerMode": 0,
+    "playerInThe": 0,
     "scienceCredit": 1000,
     "planetsInterrupted": [
         {
@@ -370,7 +394,6 @@
                 2711404603160,
                 2711404604059,
                 2711404604067,
-                2711404605154,
                 2711404605175,
                 2711404605216,
                 2711404606075,
@@ -399,15 +422,15 @@
             "z": 5405.0
         },
         "entryNormal": {
-            "x": 0.7299845218658447,
-            "y": 0.31884804368019106,
-            "z": -0.6045316457748413
+            "x": 0.7387426495552063,
+            "y": 0.30943191051483157,
+            "z": -0.5987580418586731
         },
         "entryPosition": {
-            "x": -2926.25830078125,
-            "y": 11.693349838256836,
-            "z": 5179.958984375
+            "x": -2967.922119140625,
+            "y": -9.499751091003418,
+            "z": 5215.01318359375
         }
     },
-    "checksum": "7A50E46900FF560DE990858DE6D39F79C9CB836FC2E6AB64A5ECADA161C8CD54"
+    "checksum": "787F99E05DAAE9FAC87BDF4C6479E1296E52206864C75734D82DC7ACB24D2B39"
 }

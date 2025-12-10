@@ -12,7 +12,7 @@ public class Game_NpcInteractor : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            Game_InteractionUI.Instance.ShowText(interactText, transform);
+            // Game_InteractionUI.Instance.ShowText(interactText, transform);
             //Game_OutlineEffect.Instance.HighlightObject(GetComponent<Renderer>());
         }
     }
@@ -22,7 +22,7 @@ public class Game_NpcInteractor : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            Game_InteractionUI.Instance.HideText();
+            // Game_InteractionUI.Instance.HideText();
             //Game_OutlineEffect.Instance.RemoveHighlight();
         }
     }

@@ -83,10 +83,10 @@ public class Game_SaveSystem : MonoBehaviour
         if (Game_SaveSystem.Instance == null && Instance == null) { Instance = this; DontDestroyOnLoad(gameObject); Load(); }
         else Destroy(gameObject);
     }
-    private void OnApplicationQuit()
-    {
-        SetPlayerPosition();
-    }
+    // private void OnApplicationQuit() // perbaiki bug ubity workder dulu
+    // {
+    //     SetPlayerPosition();
+    // }
 
     public void MarkNodeDepleted(long planetId, long objekResourceId)
     {
@@ -211,14 +211,15 @@ public class Game_SaveSystem : MonoBehaviour
 
         save.playerId = Guid.NewGuid().ToString();
         save.playerName = "none";
-        save.playerPosition = new Vector3(0, 7, 0);
+        save.playerPosition = new Vector3(0, 30, 0);
+        // save.playerPosition = new Vector3(0, 7, 0); // space context for director access
         save.universeSeed = 1361640601; // set custom seedUniverse
         // save.universeSeed = rng.NextInt(1, int.MaxValue);
         save.galaxySeed = SeedUtil.SubSeed((long)save.universeSeed, 0);
         save.playerMode = PlayerMode.Human; // ini debug fast space loh ya, kalo new game
         // save.playerMode = PlayerMode.Human;
-        save.playerInThe = PlayerInThe.Space;
-        // save.playerInThe = PlayerInThe.Ground;
+        // save.playerInThe = PlayerInThe.Space;
+        save.playerInThe = PlayerInThe.Ground;
         save.scienceCredit = 0;
         // save.lastWorld = SeedUtil.SubSeed(save.galaxySeed, 0);
         save.lastWorldId = SeedUtil.MakePlanetId((int)save.galaxySeed, 0, 0, 0); //broken, karena seharusnya dibuat murni statik

@@ -73,8 +73,8 @@ public class Root_GameStartManager : MonoBehaviour
         var loadData = Game_SaveSystem.Instance.getFullSaveData();
 
         Game_SeedManager.Instance.Init(loadData.universeSeed, loadData.galaxySeed, loadData.lastWorldSeed);
-        SceneManager.LoadScene("Template_SpaceWorld");
-        // SceneManager.LoadScene("Template_UnderWorld");
+        // SceneManager.LoadScene("Template_SpaceWorld");
+        SceneManager.LoadScene("Template_UnderWorld");
         Debug.Log("New Game created");
 
 
